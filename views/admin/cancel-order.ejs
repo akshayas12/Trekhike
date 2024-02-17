@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Cancelled Orders</title>
+    </head>
+    <body>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 35px;
+            padding: 5px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        table {
+            width: 80%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        tbody tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        p {
+           
+            color: #0c0c0c;
+        }
+   
+    nav {
+        background-color: #333;
+        padding: 10px 0;
+        text-align: center;
+    }
+
+    nav a {
+        color: white;
+        text-decoration: none;
+        margin: 0 10px;
+    }
+
+    nav a:hover {
+        text-decoration: underline;
+    }
+
+   </style>   
+      <nav>
+        <a href="/admin/adminhome" class="nav-item list-group-item"><i class="fa fa-tachometer-alt me-2"></i>Dashboard</a>
+        <a href="/admin/listUser" class="nav-item list-group-item"><i class="bi bi-people-fill"></i>User Management</a>
+        <a href="/admin/category" class="nav-item list-group-item"><i class="fa fa-th me-2"></i>Category Management</a>
+        <a href="/admin/product" class="nav-item list-group-item"><i class="fa fa-keyboard me-2"></i>Product Management</a>
+        <a href="/admin/loadorder" class="nav-item list-group-item"><i class="fa fa-table me-2"></i>Order Management</a>
+        <a href="/admin/loadcoupon" class="nav-item list-group-item"><i class="fa fa-chart-bar me-2"></i>Coupon Management</a>
+       
+    </nav>
+    <h2>Canceled Orders</h2>
+
+    <% if (canceledOrders.length === 0) { %>
+        <p>No canceled orders found.</p>
+    <% } else { %>
+        <table>
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>User Name</th>
+                    <th>Product Details</th>
+                    <th>Total amount</th>
+                    <th>Cancellation Reason</th>
+                    <th> Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% canceledOrders.forEach(order => { %>
+                    <tr>
+                        <td><%= order._id %></td>
+                        <td><%= order.userName %></td>
+                        <td>
+                            <% if (order.products && order.products.length > 0) { %>
+                                <% order.products.forEach(product => { %>
+                                    <p>
+                                        <% if (product.product && product.product.productName) { %>
+                                            Product Name: <%= product.product.productName %>,<br>
+                                        <% } else { %>
+                                            Product Name: N/A,<br>
+                                        <% } %>
+                        
+                                        <% if (product.product && product.product.price) { %>
+                                            Product Price: <%= product.product.price %><br>
+                                        <% } else { %>
+                                            Product Price: N/A<br>
+                                        <% } %>
+                                        Product Quantity: <%= product.quantity %><br>
+
+                                    </p>
+                                <% }) %>
+                            <% } else { %>
+                                No products
+                            <% } %>
+                        </td>
+                        <td><%= order.totalAmount %></td>
+                        <td><%= order.cancellation.reason %></td>
+                        <td>
+                            <div class="button-container">
+                                <form action="/admin/confirm-order-cancellation/<%= order.id %>" method="POST">
+                                    <!-- Include any form input fields if needed -->
+                                    <button type="submit" class="confirm-button" onclick="return confirmCancellation()">
+                                        Confirm Cancellation
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                        
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    <% } %>
+<a href="/admin/loadorder">Back to order details</a>
+    <script>
+        function confirmCancellation() {
+            var isConfirmed = confirm("Are you sure you want to confirm the order cancellation?");
+            return isConfirmed;
+        }
+    </script>
+    
+</body>
+</html>

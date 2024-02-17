@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin - Returns</title>
+</head>
+    <body>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        nav {
+        background-color: #333;
+        padding: 10px 0;
+        text-align: center;
+    }
+
+    nav a {
+        color: white;
+        text-decoration: none;
+        margin: 0 10px;
+    }
+
+    nav a:hover {
+        text-decoration: underline;
+    }
+
+   </style>   
+      <nav>
+        <a href="/admin/adminhome" class="nav-item list-group-item"><i class="fa fa-tachometer-alt me-2"></i>Dashboard</a>
+        <a href="/admin/listUser" class="nav-item list-group-item"><i class="bi bi-people-fill"></i>User Management</a>
+        <a href="/admin/category" class="nav-item list-group-item"><i class="fa fa-th me-2"></i>Category Management</a>
+        <a href="/admin/product" class="nav-item list-group-item"><i class="fa fa-keyboard me-2"></i>Product Management</a>
+        <a href="/admin/loadorder" class="nav-item list-group-item"><i class="fa fa-table me-2"></i>Order Management</a>
+        <a href="/admin/loadcoupon" class="nav-item list-group-item"><i class="fa fa-chart-bar me-2"></i>Coupon Management</a>
+       
+    </nav>
+
+    <h1>Returns</h1>
+    <table>
+        <tr>
+            <th>User Name</th>
+            <th>Product</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Return Reason</th>
+            <!-- Add more columns as needed -->
+        </tr>
+        <% returnedOrders.forEach(order => { %>
+            <tr>
+                <td><%= order.userId.name %></td> <!-- Change userName to name -->
+                <% if (order.products[0] && order.products[0].product) { %>
+                    <td><%= order.products[0].product.productName %></td>
+                    <td><%= order.products[0].product.price %></td>
+                <% } else { %>
+                    <td colspan="2">Product not found</td>
+                <% } %>
+                <td><%= order.products[0].quantity %></td>
+                <td><%= order.returnReason %></td>
+                <!-- Add more data as needed -->
+            </tr>
+        <% }); %>
+    </table>
+</body>
+</html>

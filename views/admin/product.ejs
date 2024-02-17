@@ -1,0 +1,404 @@
+
+ <%- include('../layout/adminheader.ejs') %>
+ <style>
+    /* Add this CSS to your existing stylesheet or create a new one */
+
+    body {
+        background-color: #000; /* Set the background color to black */
+        color: #fff; /* Set the text color to white */
+    }
+
+   
+    .container {
+        margin-top: 1px;
+        position: relative;
+        top:10px;
+        justify-content: center;
+        align-items: center; 
+        height: 100vh; 
+    }
+
+    .table {
+        background-color: #222;
+        color: #fff;
+        border-radius: 10px;
+        margin-top: 10px; /* Add margin to the top of the table */
+    }
+
+    .table th, .table td {
+        border-color: #444;
+        margin: 10px;
+        padding: 15px; /* Add padding to the table cells for space between columns */
+    }
+
+    .table th {
+        background-color: #333;
+    }
+
+    /* Optional: Style for the checkbox */
+    .control {
+        position: relative;
+        cursor: pointer;
+        display: inline-block;
+    }
+
+    .control input {
+        position: absolute;
+        z-index: -1;
+        opacity: 0;
+    }
+
+    .control__indicator {
+        position: absolute;
+        top: 2px;
+        left: 0;
+        height: 20px;
+        width: 20px;
+        background: #fff;
+        border: 1px solid #444;
+        border-radius: 4px;
+    }
+    .sidebar{
+    background-color: #191C24;
+   }
+   .sidebar .navbar-nav .nav-item {
+    width: 110%; /* Set the width to 100% */
+    height: 80px;
+}
+
+.sidebar .navbar-nav .nav-item a {
+    display: block;
+    padding: 15px; /* Adjust the padding as needed */
+    text-decoration: none;
+    color: #e6dbdb; /* Set the text color */
+}
+
+.sidebar .navbar-nav .nav-item:hover,
+.sidebar .navbar-nav .nav-item.active {
+    background-color:#191C24; /* Set the background color on hover or when the link is active */
+}
+
+/* Optional: Add transition for a smooth effect */
+.sidebar .navbar-nav .nav-item a {
+    transition: background-color 0.3s ease;
+}
+
+    /* Add any additional styles you need for your specific design */
+</style>
+        <!-- Sidebar Start -->
+        <div class="sidebar pe-4 pb-3">
+            <nav class="navbar bg-secondary navbar-dark">
+                <a href="index.html" class="navbar-brand mx-4 mb-3">
+                    <h3 class="text-primary"><i class="fa fa-user-edit me-2"></i>Admin Panel</h3>
+                </a>
+                <div class="d-flex align-items-center ms-4 mb-4">
+                    <div class="position-relative">
+                        <img class="rounded-circle" src="img/user.jpg" alt="" style="width: 40px; height: 40px;">
+                        <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"></div>
+                    </div>
+                    <div class="ms-3">
+                        <h6 class="mb-0">Jhon Doe</h6>
+                        <span>Admin</span>
+                    </div>
+                </div>
+                <div class="navbar-nav w-100">
+                    <a href="/admin/adminhome" class="nav-item list-group-item"><i class="fa fa-tachometer-alt me-2"></i>Dashboard</a>
+                    <a href="/admin/listUser" class="nav-item list-group-item"><i class="bi bi-people-fill"></i>User Management</a>
+                    <a href="/admin/category" class="nav-item list-group-item"><i class="fa fa-th me-2"></i>Category Management</a>
+                    <a href="/admin/product" class="nav-item list-group-item"><i class="fa fa-keyboard me-2"></i>Product Management</a>
+                    <a href="/admin/loadorder" class="nav-item list-group-item"><i class="fa fa-table me-2"></i>Order Management</a>
+                    <a href="/admin/loadcoupon" class="nav-item list-group-item"><i class="fa fa-chart-bar me-2"></i>Coupon Management</a>
+                   
+                  </div>
+            </nav>
+        </div>
+        <!-- Sidebar End -->
+
+
+        <!-- Content Start -->
+        <div class="content">
+            <!-- Navbar Start -->
+            <nav class="navbar navbar-expand bg-secondary navbar-dark sticky-top px-4 py-0">
+                <a href="index.html" class="navbar-brand d-flex d-lg-none me-4">
+                    <h2 class="text-primary mb-0"><i class="fa fa-user-edit"></i></h2>
+                </a>
+                <a href="#" class="sidebar-toggler flex-shrink-0">
+                    <i class="fa fa-bars"></i>
+                </a>
+                <form class="d-none d-md-flex ms-4">
+                    <input class="form-control bg-dark border-0" type="search" placeholder="Search">
+                </form>
+                <div class="navbar-nav align-items-center ms-auto">
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                            <i class="fa fa-envelope me-lg-2"></i>
+                            <span class="d-none d-lg-inline-flex">Message</span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
+                            <a href="#" class="dropdown-item">
+                                <div class="d-flex align-items-center">
+                                    <img class="rounded-circle" src="img/user.jpg" alt="" style="width: 40px; height: 40px;">
+                                    <div class="ms-2">
+                                        <h6 class="fw-normal mb-0">Jhon send you a message</h6>
+                                        <small>15 minutes ago</small>
+                                    </div>
+                                </div>
+                            </a>
+                            <hr class="dropdown-divider">
+                            <a href="#" class="dropdown-item">
+                                <div class="d-flex align-items-center">
+                                    <img class="rounded-circle" src="img/user.jpg" alt="" style="width: 40px; height: 40px;">
+                                    <div class="ms-2">
+                                        <h6 class="fw-normal mb-0">Jhon send you a message</h6>
+                                        <small>15 minutes ago</small>
+                                    </div>
+                                </div>
+                            </a>
+                            <hr class="dropdown-divider">
+                            <a href="#" class="dropdown-item">
+                                <div class="d-flex align-items-center">
+                                    <img class="rounded-circle" src="img/user.jpg" alt="" style="width: 40px; height: 40px;">
+                                    <div class="ms-2">
+                                        <h6 class="fw-normal mb-0">Jhon send you a message</h6>
+                                        <small>15 minutes ago</small>
+                                    </div>
+                                </div>
+                            </a>
+                            <hr class="dropdown-divider">
+                            <a href="#" class="dropdown-item text-center">See all message</a>
+                        </div>
+                    </div>
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                            <i class="fa fa-bell me-lg-2"></i>
+                            <span class="d-none d-lg-inline-flex">Notificatin</span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
+                            <a href="#" class="dropdown-item">
+                                <h6 class="fw-normal mb-0">Profile updated</h6>
+                                <small>15 minutes ago</small>
+                            </a>
+                            <hr class="dropdown-divider">
+                            <a href="#" class="dropdown-item">
+                                <h6 class="fw-normal mb-0">New user added</h6>
+                                <small>15 minutes ago</small>
+                            </a>
+                            <hr class="dropdown-divider">
+                            <a href="#" class="dropdown-item">
+                                <h6 class="fw-normal mb-0">Password changed</h6>
+                                <small>15 minutes ago</small>
+                            </a>
+                            <hr class="dropdown-divider">
+                            <a href="#" class="dropdown-item text-center">See all notifications</a>
+                        </div>
+                    </div>
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                            <img class="rounded-circle me-lg-2" src="img/user.jpg" alt="" style="width: 40px; height: 40px;">
+                            <span class="d-none d-lg-inline-flex">John Doe</span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
+                            <a href="#" class="dropdown-item">My Profile</a>
+                            <a href="#" class="dropdown-item">Settings</a>
+                            <a href="/admin/logout" class="dropdown-item">Log Out</a>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+            <!-- Navbar End -->
+
+
+            <!-- Blank Start -->
+            <!-- <div class="container-fluid pt-4 px-4">
+                <div class="row vh-100 bg-secondary rounded align-items-center justify-content-center mx-0">
+                    <div class="col-md-6 text-center">
+                        <h3>This is blank page</h3>
+                    </div>
+                </div>
+            </div> -->
+            <!-- Blank End -->
+
+
+            <!-- Footer Start -->
+            <!-- <div class="container" >  -->
+                <div class="bg-secondary rounded-topx"> 
+                     <div class="row"> 
+                        <!-- <div class="content"> -->
+                            <h2 id ="ff" class="mb-5">Product  Management</h2>
+                            <div class="container">
+                              
+                                <form action="/admin/product" method="GET">
+                                    <input type="text" name="search" placeholder="Search..." value="<%= searchQuery %>">
+                                    <select name="category">
+                                        <option value="">All Categories</option>
+                                        <% categories.forEach(category => { %>
+                                            <option value="<%= category._id %>" <%= category._id.toString() === filterCategory.toString() ? 'selected' : '' %>><%= category.categoryName %></option>
+                                        <% }) %>
+                                    </select>
+                                    <button type="submit">Search</button>
+                                </form>
+                            <div class="container">
+                                    <h5><a href="/admin/add-product">Add Product</a></h3>
+                                <div class="table-responsive custom-table-responsive">
+                                    
+                                    <table class="table custom-table pt-4">
+                                        <thead>
+                                        <tr>
+                                            <th scope="col">
+                                                <label class="control control--checkbox">
+                                                   
+                                                </label>
+                                            </th>
+                                           
+                                            <th scope="col">image</th>
+                                            <th scope="col">Product Name</th>
+                                            <th scope="col">category</th>
+                                            
+                                            <th scope="col">Size</th>
+                                            <th scope="col">Orginal Price</th>
+
+                                            <th scope="col">Discount price</th>
+                                            <th scope="col">Stock</th>
+                                            <th scope="col">Category offer</th>
+
+                                            <th scope="col">Product Offer Amount</th>
+                                             <th scope="col">Offer End Date</th>
+                                            <th scope="col">Action</th>
+                                            <th scope="col">status</th>
+                                            
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% products.forEach(product => { %>
+                                                <% if (product.category ) { %>
+                                                <tr>
+                                                    <td>
+                                                      
+                                                    </td>
+                                                    <td>
+                                                        <% if (product.images.length > 0) { %>
+                                                            <img src="/images/<%= product.images[0] %>"  style="max-width: 50px; max-height: 50px;">
+                                                        <% } else { %>
+                                                            <!-- Display a placeholder image or text -->
+                                                            No Image
+                                                        <% } %>
+                                                    </td>
+
+                                                    <td><%= product.productName %></td>
+                                                    <td><% if (product.category) { %>
+                                                        <%= product.category.categoryName %>
+                                                    <% } else { %>
+                                                        No Category
+                                                    <% } %></td>                                                    
+                                                    <td><%= product.size %></td>
+                                                    <td><%= product.oldPrice %></td>
+                                                  <td>  <% if (product.oldPrice !== product.price) { %>
+
+                                                  <%= product.price %>
+                                                    <% } else { %>
+                                                        No Discount
+                                                     <% } %>
+                                                    </td>
+                                                    <td><%= product.stock %></td>
+
+                                                   <td>
+                                                    <% if (product.category && product.category.offer && product.offer && product.category.offer.amount) { %>
+                                                        <p class="category-offer">
+                                                            Category Offer: <%= product.category.offer.amount %>% off on this product!
+                                                        </p>
+                                                    <% } %>
+                                                   </td>
+                                                    <td>
+                                                        <% if (product.offer && product.offer.amount) { %>
+                                                            <%= product.offer.amount %>%
+                                                        <% } else { %>
+                                                           No offer
+                                                        <% } %>
+                                                    </td>
+                                                    <td>
+                                                        <% if (product.offer && product.offer.endDate) { %>
+                                                            <%= product.offer.endDate.toLocaleDateString() %>
+                                                        <% } else { %>
+                                                            No offer
+                                                        <% } %>
+                                                    </td>
+                                                    
+
+                                                    <td>
+                                                        <button class="btn"> <a href="/admin/edit-product/<%= product._id %>">Edit</a></button> 
+                                                        <!-- <button class="btn"> <a href="/admin/product/<%= product._id %>">Delete</a></button> -->
+                                                        <td>
+                                                           
+                                                       
+                                                            <form action="/admin/product/<%= product._id %>/update-status" method="post">
+                                                                <button type="submit" style="border: 2px solid black; background-color: none;">
+                                                                    <% if (product.blocked || (product.category && product.category.blocked)) { %>
+                                                                        <span style="color: red;">Blocked</span>
+                                                                <% } else { %>
+                                                                    <span style="color: green;">Active</span>
+                                                                <% } %></button>
+                                                            </form>
+                                                           </td>
+                                                    </td>
+                                                </tr>
+                                                <% } %>
+                                            <% }); %>
+                                        </tbody>
+                                        
+                                    </table>
+                                    <div class="pagination">
+                                        <% for (let i = 1; i <= totalPages; i++) { %>
+                                            <a href="/admin/product?page=<%= i %>&limit=<%= limit %>&search=<%= searchQuery %>&category=<%= filterCategory %>"
+                                               class="<%= currentPage === i ? 'active' : '' %>">
+                                                <%= i %> <hr>
+                                            </a>
+                                        <% } %>
+                                    </div>
+                                    <a href="/admin/adminhome">Back To Home</a>
+                                </div>
+                            </div>
+                        <!-- </div> -->
+                        <script>
+                            function confirmDelete(categoryId) {
+                                var confirmDelete = confirm("Are you sure you want to delete this category?");
+                                if (confirmDelete) {
+                                    window.location.href = "/admin/category/" + categoryId;
+                                }
+                            }
+                        </script>
+                        
+                        <script src="js/jquery-3.3.1.min.js"></script>
+                        <script src="js/popper.min.js"></script>
+                        <script src="js/bootstrap.min.js"></script>
+                        <script src="js/main.js"></script>
+                     </div> 
+                 </div> 
+             </div> 
+            <!-- Footer End -->
+        </div>
+        <!-- Content End -->
+
+
+        <script>
+            // Get the current path of the URL
+            var path = window.location.pathname;
+        
+            // Remove trailing slash if it exists
+            path = path.replace(/\/$/, "");
+        
+            // Get all navigation links
+            var navLinks = document.querySelectorAll('.navbar-nav a');
+        
+            // Iterate through each link and check if its href matches the current path
+            navLinks.forEach(function(link) {
+                // Remove the "active" class from all links
+                link.classList.remove('active');
+        
+                // Check if the link's href matches the current path
+                if (link.getAttribute('href') === path) {
+                    // Add the "active" class to the matching link
+                    link.classList.add('active');
+                }
+            });
+        </script>
+        <%- include('../layout/adminfooter.ejs') %>

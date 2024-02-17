@@ -1,0 +1,785 @@
+<%- include('../layout/productheader') %>
+<style>
+    .header-search-wrapper {
+    position: relative;
+}
+
+.search-input {
+    padding: 8px 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    width: 200px; /* Adjust the width as needed */
+}
+
+.search-button {
+    padding: 8px 15px;
+    background-color: #e7780a;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+/* Custom styling for checkboxes */
+.custom-control {
+  position: relative;
+  padding-left: 30px; /* Adjust as needed */
+  margin-bottom: 10px; /* Adjust as needed */
+  cursor: pointer;
+}
+
+.custom-control-input {
+  position: absolute;
+  left: 0;
+  top: 0;
+  margin-top: 4px; /* Adjust as needed */
+}
+
+.custom-control-label {
+  position: relative;
+  padding-left: 35px; /* Adjust as needed */
+  line-height: 1.5;
+}
+
+/* Style the check icon */
+.custom-control-label .fa-check {
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: green; /* Adjust as needed */
+  font-size: 16px; /* Adjust as needed */
+}
+
+
+</style>
+<%
+    function formatDate(date) {
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        return date ? new Date(date).toLocaleDateString('en-US', options) : '';
+    }
+%>
+<%
+if(typeof message !=='undefined'){
+  %>
+  <script>
+  alert('<%= message %>');
+  // if the registeration is sucees its redirect the login page
+  //  window.location.href='/login';
+</script>
+  <% } %>
+            <div class="header-middle sticky-header">
+                <div class="container">
+                    <div class="header-left">
+                        <button class="mobile-menu-toggler">
+                            <span class="sr-only">Toggle mobile menu</span>
+                            <i class="icon-bars"></i>
+                        </button>
+
+                        <a href="#" class="logo">
+							<h2 style="color: rgb(237, 152, 4);">TREKHIKE</h2>
+	                    </a>
+
+                        <nav class="main-nav">
+                            <ul class="menu sf-arrows">
+                                <li class="megamenu-container active">
+                                    <a href="/" class="sf-with-ul">Home</a>
+
+                                    
+                                </li>
+                                <li>
+                                    <a href="" class="sf-with-ul">Shop</a>
+
+                                    
+                                </li>
+                               
+                                
+                            </ul><!-- End .menu -->
+                        </nav><!-- End .main-nav -->
+                    </div><!-- End .header-left -->
+
+                    <div class="header-right">
+                        <div class="header-search">
+                            <a href="#" class="search-toggle" role="button" title="Search"><i class="icon-search"></i></a>
+                             <form action="/product-list" method="get" >
+                                <div class="header-search-wrapper">
+                                    <input type="text" name="search" placeholder="Search products" value="<%= searchQuery %>" class="search-input">
+                                    <button type="submit" style="width: 100px;">Search</button>
+                                 </div>
+                                <!-- End .header-search-wrapper -->
+                            </form> 
+                           
+                            
+                        </div><!-- End .header-search -->
+                        <div class="wishlist">
+	                        <a href="/wishlist" title="Wishlist">
+	                            <i class="icon-heart-o"></i>
+	                           
+	                    </div><!-- End .compare-dropdown -->
+
+
+                        <div class="dropdown cart-dropdown">
+                            <a href="/cartlist" class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static">
+                                <i class="icon-shopping-cart"></i>
+                                
+                            </a>
+
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <div class="dropdown-cart-products">
+                                    
+                                    
+                                </div><!-- End .cart-product -->
+
+                                <div class="dropdown-cart-total">
+                                    
+                                </div><!-- End .dropdown-cart-total -->
+
+                                <div class="dropdown-cart-action">
+                                    <a href="/cartlist" class="btn btn-primary">View Cart</a>
+                                </div><!-- End .dropdown-cart-total -->
+                            </div><!-- End .dropdown-menu -->
+                        </div><!-- End .cart-dropdown -->
+                    </div><!-- End .header-right -->
+                </div><!-- End .container -->
+            </div><!-- End .header-middle -->
+        </header><!-- End .header -->
+
+        <main class="main">
+        	<div class="page-header text-center" style="background-image: url('user/images/page-header-bg.jpg')">
+        		<div class="container">
+        			<h1 class="page-title">Product List<span></span></h1>
+        		</div><!-- End .container -->
+        	</div><!-- End .page-header -->
+            <nav aria-label="breadcrumb" class="breadcrumb-nav mb-2">
+                <div class="container">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/home">Home</a></li>
+                        <li class="breadcrumb-item"><a href="#">Shop</a></li>
+                    </ol>
+                </div><!-- End .container -->
+            </nav><!-- End .breadcrumb-nav -->
+
+            <div class="page-content">
+                <div class="container">
+                	<div class="row">
+                		<div class="col-lg-9">
+                			<div class="toolbox">
+                				<div class="toolbox-left">
+                					<a href="/view-offered-categories">View Offered Categories</a>
+
+                				</div><!-- End .toolbox-left -->
+
+                				<div class="toolbox-right">
+                					
+                					<div class="toolbox-layout">
+                						
+                					</div><!-- End .toolbox-layout -->
+                				</div><!-- End .toolbox-right -->
+                			</div><!-- End .toolbox -->
+                            <div class="products mb-3">
+                                <div class="row justify-content-center">
+                                    <% products.forEach(product => { %>
+                                        <% const categoryBlocked = product.category && product.category.blocked; %>
+                            
+                                        <% if (!selectedCategory || (selectedCategory && product.category && product.category._id.toString() === selectedCategory)) { %>
+                            
+                                            <% if (!product.blocked && !categoryBlocked) { %>
+                                                <div class="col-6">
+                                                    <div class="product product-7 text-center">
+                                                        <figure class="product-media">
+                                                            <a href="/product/<%= product._id %>">
+                                                                <img src="/images/<%= product.images[0] %>" alt="<%= product.productName %>" class="product-image" style="height: 400px; width: 450px;">
+                                                            </a>
+                            
+                                                            <div class="product-action-vertical">
+                                                                <a href="/addwhitelist/<%= product._id %>" class="btn-product-icon btn-wishlist btn-expandable">
+                                                                    <span>add to wishlist</span>
+                                                                </a>
+                                                            </div><!-- End .product-action-vertical -->
+                            
+                                                            <div class="product-action">
+                                                                <% if (product.stock > 0) { %>
+                                                                    <a href="/add-to-cart/<%= product._id %>" class="btn-product btn-cart"><span>add to cart</span></a>
+                                                                <% } else { %>
+                                                                    <span class="btn-product btn-out-of-stock"><span>Out of Stock</span></span>
+                                                                <% } %>
+                                                            </div><!-- End .product-action -->
+                                                        </figure><!-- End .product-media -->
+                            
+                                                        <div class="product-body">
+                                                            <div class="product-cat">
+                                                                <a href="#"><!-- Display product category --></a>
+                                                            </div><!-- End .product-cat -->
+                                                            <h3 class="product-title">
+                                                                <a href="<%= '/products/' + product._id %>"><%= product.productName %></a>
+                                                            </h3><!-- End .product-title -->
+                                                            <div class="product-price">
+                                                                <% if (product.offer && product.offer.amount) { %>
+                                                                  <!-- Product Offer -->
+                                                                  <b>
+                                                                    <p class="offer-details" style="color: darkgreen;">
+                                                                      Save <%= product.offer.amount %>% off until <%= formatDate(product.offer.endDate) %>
+                                                                    </p>
+                                                                  </b>
+                                                                  <br>
+                                                                  <!-- Display old price with strike-through -->
+                                                                  <p class="old-price">$<%= product.oldPrice %></p>
+                                                                  <!-- Display discounted price -->
+                                                                  <p class="new-price">$<%= product.price %></p>
+                                                                <% } else if (product.category && product.category.offer && product.category.offer.amount) { %>
+                                                                  <!-- Category Offer -->
+                                                                  <p class="offer-details"  style="color: darkgreen;">
+                                                                    Save <%= product.category.offer.amount %>% off under <%= product.category.categoryName %> category until <%= formatDate(product.category.offer.endDate) %>
+                                                                  </p>
+                                                              
+                                                                  <!-- Display old price with strike-through -->
+                                                                  <p class="old-price">$<%= product.oldPrice %></p><br>
+                                                                  <!-- Display discounted price -->
+                                                                <b>  <p class="new-price">$<%= product.price %></p></b>
+                                                                <% } else { %>
+                                                                  <!-- Regular Price -->
+                                                                  <p class="regular-price">$<%= product.price %></p>
+                                                                <% } %>
+                                                              </div><!-- End .product-price -->
+                                                              
+                                                        </div><!-- End .product-body -->
+                                                    </div><!-- End .product -->
+                                                </div><!-- End .col-sm-6 -->
+                                            <% } %>
+                                        <% } %>
+                                    <% }); %>
+                                </div><!-- End .row -->
+                            </div><!-- End .products -->
+                            
+
+<!-- Pagination -->
+<div class="toolbox-layout">
+    <nav class="pagination" aria-label="Pagination">
+        <ul class="pagination">
+            <% if (currentPage > 1) { %>
+                <li class="page-item">
+                    <a class="page-link" href="?selectedCategory=<%= selectedCategory %>&sort=<%= sortDropdownValue %>&page=<%= currentPage - 1 %>" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+            <% } %>
+
+            <% for (let i = 1; i <= totalPages; i++) { %>
+                <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+                    <a class="page-link" href="?selectedCategory=<%= selectedCategory %>&sort=<%= sortDropdownValue %>&page=<%= i %>"><%= i %></a>
+                </li>
+            <% } %>
+
+            <% if (currentPage < totalPages) { %>
+                <li class="page-item">
+                    <a class="page-link" href="?selectedCategory=<%= selectedCategory %>&sort=<%= sortDropdownValue %>&page=<%= currentPage + 1 %>" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            <% } %>
+        </ul>
+    </nav>
+</div>
+                			
+                		</div><!-- End .col-lg-9 -->
+                		<aside class="col-lg-3 order-lg-first">
+                			<div class="sidebar sidebar-shop">
+                				<div class="widget widget-clean">
+                					<label>Filters:</label>
+                					<a href="#" class="sidebar-filter-clear">Clean All</a>
+                				</div><!-- End .widget widget-clean -->
+                                <form action="/product-list" method="GET" id="yourFormId">
+                                    <input type="hidden" id="selectedCategory" name="selectedCategory" value="<%= selectedCategory %>">
+
+                                    <div class="widget widget-collapsible">
+                                        <h3 class="widget-title">
+                                            <a data-toggle="collapse" href="#widget-1" role="button" aria-expanded="true" aria-controls="widget-1">
+                                                Category
+                                            </a>
+                                        </h3><!-- End .widget-title -->
+                                    
+                                        <div class="collapse show" id="widget-1">
+                                            <div class="widget-body">
+                                                <div class="filter-items filter-items-count">
+                                                  
+                                                    <a href="/product-list" class="category-link">All Products</a>
+                                                  
+                                                    <% categories.forEach(category => { %>
+                                                        <% if (!category.blocked) { %> <!-- Check if the category is not blocked -->
+                                                            <div class="filter-item">
+                                                                <div class="custom-control custom-checkbox">
+                                                                    <a href="/product-list?category=<%= category._id %>&sort=<%= sortDropdownValue %>" class="category-link">
+                                                                        <%= category.categoryName %>
+                                                                        <% if(category.isSelected) { %>
+                                                                            <i class="fas fa-check"></i> <!-- Add your check icon class or HTML here -->
+                                                                        <% } %>
+                                                                    </a>
+                                                                </div><!-- End .custom-checkbox -->
+                                                            </div><!-- End .filter-item -->
+                                                        <% } %>
+                                                    <% }); %>
+                                    
+                                                    <br><br>
+                                                    
+                                                    <!-- Add this inside the toolbox-right section -->
+                                                    <div class="toolbox-layout">
+                                                        <label for="sort" style="color: #e7780a;">Sort by:</label><br>
+                                                        <select id="sort" name="sort" style="color: #e7780a;" onchange="this.form.submit()">
+                                                            <option value="asc">Price Low to High</option>
+                                                            <option value="desc">Price High to Low</option>
+                                                        </select>
+                                                    </div>
+                                                </div><!-- End .filter-items -->
+                                            </div><!-- End .widget-body -->
+                                        </div>
+                                    </div>
+                                    
+                                </form>
+        					
+                			</div><!-- End .sidebar sidebar-shop -->
+                		</aside><!-- End .col-lg-3 -->
+                	</div><!-- End .row -->
+                </div><!-- End .container -->
+            </div><!-- End .page-content -->
+        </main><!-- End .main -->
+
+        <footer class="footer">
+        	<div class="footer-middle">
+	            <div class="container">
+	            	<div class="row">
+	            		<div class="col-sm-6 col-lg-3">
+	            			<div class="widget widget-about">
+                                <a href="#" class="logo">
+                                    <h2 style="color: #e7780a;">TREKHIKE</h2>
+                                </a>	            				<p>Praesent dapibus, neque id cursus ucibus, tortor neque egestas augue, eu vulputate magna eros eu erat. </p>
+
+	            				<div class="social-icons">
+	            					<a href="#" class="social-icon" target="_blank" title="Facebook"><i class="icon-facebook-f"></i></a>
+	            					<a href="#" class="social-icon" target="_blank" title="Twitter"><i class="icon-twitter"></i></a>
+	            					<a href="#" class="social-icon" target="_blank" title="Instagram"><i class="icon-instagram"></i></a>
+	            					<a href="#" class="social-icon" target="_blank" title="Youtube"><i class="icon-youtube"></i></a>
+	            					<a href="#" class="social-icon" target="_blank" title="Pinterest"><i class="icon-pinterest"></i></a>
+	            				</div><!-- End .soial-icons -->
+	            			</div><!-- End .widget about-widget -->
+	            		</div><!-- End .col-sm-6 col-lg-3 -->
+
+	            		<div class="col-sm-6 col-lg-3">
+	            			<div class="widget">
+	            				<h4 class="widget-title">Useful Links</h4><!-- End .widget-title -->
+
+	            				<ul class="widget-list">
+	            					<li><a href="about.html">About Molla</a></li>
+	            					<li><a href="#">How to shop on Molla</a></li>
+	            					<li><a href="#">FAQ</a></li>
+	            					<li><a href="contact.html">Contact us</a></li>
+	            					<li><a href="login.html">Log in</a></li>
+	            				</ul><!-- End .widget-list -->
+	            			</div><!-- End .widget -->
+	            		</div><!-- End .col-sm-6 col-lg-3 -->
+
+	            		<div class="col-sm-6 col-lg-3">
+	            			<div class="widget">
+	            				<h4 class="widget-title">Customer Service</h4><!-- End .widget-title -->
+
+	            				<ul class="widget-list">
+	            					<li><a href="#">Payment Methods</a></li>
+	            					<li><a href="#">Money-back guarantee!</a></li>
+	            					<li><a href="#">Returns</a></li>
+	            					<li><a href="#">Shipping</a></li>
+	            					<li><a href="#">Terms and conditions</a></li>
+	            					<li><a href="#">Privacy Policy</a></li>
+	            				</ul><!-- End .widget-list -->
+	            			</div><!-- End .widget -->
+	            		</div><!-- End .col-sm-6 col-lg-3 -->
+
+	            		<div class="col-sm-6 col-lg-3">
+	            			<div class="widget">
+	            				<h4 class="widget-title">My Account</h4><!-- End .widget-title -->
+
+	            				<ul class="widget-list">
+	            					<li><a href="#">Sign In</a></li>
+	            					<li><a href="cart.html">View Cart</a></li>
+	            					<li><a href="#">My Wishlist</a></li>
+	            					<li><a href="#">Track My Order</a></li>
+	            					<li><a href="#">Help</a></li>
+	            				</ul><!-- End .widget-list -->
+	            			</div><!-- End .widget -->
+	            		</div><!-- End .col-sm-6 col-lg-3 -->
+	            	</div><!-- End .row -->
+	            </div><!-- End .container -->
+	        </div><!-- End .footer-middle -->
+
+	        <div class="footer-bottom">
+	        	<div class="container">
+	        		<p class="footer-copyright">Copyright © 2019 Molla Store. All Rights Reserved.</p><!-- End .footer-copyright -->
+	        		<figure class="footer-payments">
+	        			<img src="user/images/payments.png" alt="Payment methods" width="272" height="20">
+	        		</figure><!-- End .footer-payments -->
+	        	</div><!-- End .container -->
+	        </div><!-- End .footer-bottom -->
+        </footer><!-- End .footer -->
+    </div><!-- End .page-wrapper -->
+    <button id="scroll-top" title="Back to Top"><i class="icon-arrow-up"></i></button>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu-overlay"></div><!-- End .mobil-menu-overlay -->
+
+    <div class="mobile-menu-container">
+        <div class="mobile-menu-wrapper">
+            <span class="mobile-menu-close"><i class="icon-close"></i></span>
+
+            <form action="#" method="get" class="mobile-search">
+                <label for="mobile-search" class="sr-only">Search</label>
+                <input type="search" class="form-control" name="mobile-search" id="mobile-search" placeholder="Search in..." required>
+                <button class="btn btn-primary" type="submit"><i class="icon-search"></i></button>
+            </form>
+            
+            <nav class="mobile-nav">
+                <ul class="mobile-menu">
+                    <li class="active">
+                        <a href="index.html">Home</a>
+
+                        <ul>
+                            <li><a href="index-1.html">01 - furniture store</a></li>
+                            <li><a href="index-2.html">02 - furniture store</a></li>
+                            <li><a href="index-3.html">03 - electronic store</a></li>
+                            <li><a href="index-4.html">04 - electronic store</a></li>
+                            <li><a href="index-5.html">05 - fashion store</a></li>
+                            <li><a href="index-6.html">06 - fashion store</a></li>
+                            <li><a href="index-7.html">07 - fashion store</a></li>
+                            <li><a href="index-8.html">08 - fashion store</a></li>
+                            <li><a href="index-9.html">09 - fashion store</a></li>
+                            <li><a href="index-10.html">10 - shoes store</a></li>
+                            <li><a href="index-11.html">11 - furniture simple store</a></li>
+                            <li><a href="index-12.html">12 - fashion simple store</a></li>
+                            <li><a href="index-13.html">13 - market</a></li>
+                            <li><a href="index-14.html">14 - market fullwidth</a></li>
+                            <li><a href="index-15.html">15 - lookbook 1</a></li>
+                            <li><a href="index-16.html">16 - lookbook 2</a></li>
+                            <li><a href="index-17.html">17 - fashion store</a></li>
+                            <li><a href="index-18.html">18 - fashion store (with sidebar)</a></li>
+                            <li><a href="index-19.html">19 - games store</a></li>
+                            <li><a href="index-20.html">20 - book store</a></li>
+                            <li><a href="index-21.html">21 - sport store</a></li>
+                            <li><a href="index-22.html">22 - tools store</a></li>
+                            <li><a href="index-23.html">23 - fashion left navigation store</a></li>
+                            <li><a href="index-24.html">24 - extreme sport store</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="category.html">Shop</a>
+                        <ul>
+                            <li><a href="category-list.html">Shop List</a></li>
+                            <li><a href="category-2cols.html">Shop Grid 2 Columns</a></li>
+                            <li><a href="category.html">Shop Grid 3 Columns</a></li>
+                            <li><a href="category-4cols.html">Shop Grid 4 Columns</a></li>
+                            <li><a href="category-boxed.html"><span>Shop Boxed No Sidebar<span class="tip tip-hot">Hot</span></span></a></li>
+                            <li><a href="category-fullwidth.html">Shop Fullwidth No Sidebar</a></li>
+                            <li><a href="product-category-boxed.html">Product Category Boxed</a></li>
+                            <li><a href="product-category-fullwidth.html"><span>Product Category Fullwidth<span class="tip tip-new">New</span></span></a></li>
+                            <li><a href="cart.html">Cart</a></li>
+                            <li><a href="checkout.html">Checkout</a></li>
+                            <li><a href="wishlist.html">Wishlist</a></li>
+                            <li><a href="#">Lookbook</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="product.html" class="sf-with-ul">Product</a>
+                        <ul>
+                            <li><a href="product.html">Default</a></li>
+                            <li><a href="product-centered.html">Centered</a></li>
+                            <li><a href="product-extended.html"><span>Extended Info<span class="tip tip-new">New</span></span></a></li>
+                            <li><a href="product-gallery.html">Gallery</a></li>
+                            <li><a href="product-sticky.html">Sticky Info</a></li>
+                            <li><a href="product-sidebar.html">Boxed With Sidebar</a></li>
+                            <li><a href="product-fullwidth.html">Full Width</a></li>
+                            <li><a href="product-masonry.html">Masonry Sticky Info</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#">Pages</a>
+                        <ul>
+                            <li>
+                                <a href="about.html">About</a>
+
+                                <ul>
+                                    <li><a href="about.html">About 01</a></li>
+                                    <li><a href="about-2.html">About 02</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="contact.html">Contact</a>
+
+                                <ul>
+                                    <li><a href="contact.html">Contact 01</a></li>
+                                    <li><a href="contact-2.html">Contact 02</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="login.html">Login</a></li>
+                            <li><a href="faq.html">FAQs</a></li>
+                            <li><a href="404.html">Error 404</a></li>
+                            <li><a href="coming-soon.html">Coming Soon</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="blog.html">Blog</a>
+
+                        <ul>
+                            <li><a href="blog.html">Classic</a></li>
+                            <li><a href="blog-listing.html">Listing</a></li>
+                            <li>
+                                <a href="#">Grid</a>
+                                <ul>
+                                    <li><a href="blog-grid-2cols.html">Grid 2 columns</a></li>
+                                    <li><a href="blog-grid-3cols.html">Grid 3 columns</a></li>
+                                    <li><a href="blog-grid-4cols.html">Grid 4 columns</a></li>
+                                    <li><a href="blog-grid-sidebar.html">Grid sidebar</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="#">Masonry</a>
+                                <ul>
+                                    <li><a href="blog-masonry-2cols.html">Masonry 2 columns</a></li>
+                                    <li><a href="blog-masonry-3cols.html">Masonry 3 columns</a></li>
+                                    <li><a href="blog-masonry-4cols.html">Masonry 4 columns</a></li>
+                                    <li><a href="blog-masonry-sidebar.html">Masonry sidebar</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="#">Mask</a>
+                                <ul>
+                                    <li><a href="blog-mask-grid.html">Blog mask grid</a></li>
+                                    <li><a href="blog-mask-masonry.html">Blog mask masonry</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="#">Single Post</a>
+                                <ul>
+                                    <li><a href="single.html">Default with sidebar</a></li>
+                                    <li><a href="single-fullwidth.html">Fullwidth no sidebar</a></li>
+                                    <li><a href="single-fullwidth-sidebar.html">Fullwidth with sidebar</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="elements-list.html">Elements</a>
+                        <ul>
+                            <li><a href="elements-products.html">Products</a></li>
+                            <li><a href="elements-typography.html">Typography</a></li>
+                            <li><a href="elements-titles.html">Titles</a></li>
+                            <li><a href="elements-banners.html">Banners</a></li>
+                            <li><a href="elements-product-category.html">Product Category</a></li>
+                            <li><a href="elements-video-banners.html">Video Banners</a></li>
+                            <li><a href="elements-buttons.html">Buttons</a></li>
+                            <li><a href="elements-accordions.html">Accordions</a></li>
+                            <li><a href="elements-tabs.html">Tabs</a></li>
+                            <li><a href="elements-testimonials.html">Testimonials</a></li>
+                            <li><a href="elements-blog-posts.html">Blog Posts</a></li>
+                            <li><a href="elements-portfolio.html">Portfolio</a></li>
+                            <li><a href="elements-cta.html">Call to Action</a></li>
+                            <li><a href="elements-icon-boxes.html">Icon Boxes</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav><!-- End .mobile-nav -->
+
+            <div class="social-icons">
+                <a href="#" class="social-icon" target="_blank" title="Facebook"><i class="icon-facebook-f"></i></a>
+                <a href="#" class="social-icon" target="_blank" title="Twitter"><i class="icon-twitter"></i></a>
+                <a href="#" class="social-icon" target="_blank" title="Instagram"><i class="icon-instagram"></i></a>
+                <a href="#" class="social-icon" target="_blank" title="Youtube"><i class="icon-youtube"></i></a>
+            </div><!-- End .social-icons -->
+        </div><!-- End .mobile-menu-wrapper -->
+    </div><!-- End .mobile-menu-container -->
+
+    <!-- Sign in / Register Modal -->
+    <div class="modal fade" id="signin-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true"><i class="icon-close"></i></span>
+                    </button>
+
+                    <div class="form-box">
+                        <div class="form-tab">
+                            <ul class="nav nav-pills nav-fill" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="signin-tab" data-toggle="tab" href="#signin" role="tab" aria-controls="signin" aria-selected="true">Sign In</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="register-tab" data-toggle="tab" href="#register" role="tab" aria-controls="register" aria-selected="false">Register</a>
+                                </li>
+                            </ul>
+                            <div class="tab-content" id="tab-content-5">
+                                <div class="tab-pane fade show active" id="signin" role="tabpanel" aria-labelledby="signin-tab">
+                                    <form action="#">
+                                        <div class="form-group">
+                                            <label for="singin-email">Username or email address *</label>
+                                            <input type="text" class="form-control" id="singin-email" name="singin-email" required>
+                                        </div><!-- End .form-group -->
+
+                                        <div class="form-group">
+                                            <label for="singin-password">Password *</label>
+                                            <input type="password" class="form-control" id="singin-password" name="singin-password" required>
+                                        </div><!-- End .form-group -->
+
+                                        <div class="form-footer">
+                                            <button type="submit" class="btn btn-outline-primary-2">
+                                                <span>LOG IN</span>
+                                                <i class="icon-long-arrow-right"></i>
+                                            </button>
+
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="signin-remember">
+                                                <label class="custom-control-label" for="signin-remember">Remember Me</label>
+                                            </div><!-- End .custom-checkbox -->
+
+                                            <a href="#" class="forgot-link">Forgot Your Password?</a>
+                                        </div><!-- End .form-footer -->
+                                    </form>
+                                    <div class="form-choice">
+                                        <p class="text-center">or sign in with</p>
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <a href="#" class="btn btn-login btn-g">
+                                                    <i class="icon-google"></i>
+                                                    Login With Google
+                                                </a>
+                                            </div><!-- End .col-6 -->
+                                            <div class="col-sm-6">
+                                                <a href="#" class="btn btn-login btn-f">
+                                                    <i class="icon-facebook-f"></i>
+                                                    Login With Facebook
+                                                </a>
+                                            </div><!-- End .col-6 -->
+                                        </div><!-- End .row -->
+                                    </div><!-- End .form-choice -->
+                                </div><!-- .End .tab-pane -->
+                                <div class="tab-pane fade" id="register" role="tabpanel" aria-labelledby="register-tab">
+                                    <form action="#">
+                                        <div class="form-group">
+                                            <label for="register-email">Your email address *</label>
+                                            <input type="email" class="form-control" id="register-email" name="register-email" required>
+                                        </div><!-- End .form-group -->
+
+                                        <div class="form-group">
+                                            <label for="register-password">Password *</label>
+                                            <input type="password" class="form-control" id="register-password" name="register-password" required>
+                                        </div><!-- End .form-group -->
+
+                                        <div class="form-footer">
+                                            <button type="submit" class="btn btn-outline-primary-2">
+                                                <span>SIGN UP</span>
+                                                <i class="icon-long-arrow-right"></i>
+                                            </button>
+
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="register-policy" required>
+                                                <label class="custom-control-label" for="register-policy">I agree to the <a href="#">privacy policy</a> *</label>
+                                            </div><!-- End .custom-checkbox -->
+                                        </div><!-- End .form-footer -->
+                                    </form>
+                                    <div class="form-choice">
+                                        <p class="text-center">or sign in with</p>
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <a href="#" class="btn btn-login btn-g">
+                                                    <i class="icon-google"></i>
+                                                    Login With Google
+                                                </a>
+                                            </div><!-- End .col-6 -->
+                                            <div class="col-sm-6">
+                                                <a href="#" class="btn btn-login  btn-f">
+                                                    <i class="icon-facebook-f"></i>
+                                                    Login With Facebook
+                                                </a>
+                                            </div><!-- End .col-6 -->
+                                        </div><!-- End .row -->
+                                    </div><!-- End .form-choice -->
+                                </div><!-- .End .tab-pane -->
+                            </div><!-- End .tab-content -->
+                        </div><!-- End .form-tab -->
+                    </div><!-- End .form-box -->
+                </div><!-- End .modal-body -->
+            </div><!-- End .modal-content -->
+        </div><!-- End .modal-dialog -->
+    </div><!-- End .modal -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const sortDropdown = document.getElementById('sort');
+            const savedSort = localStorage.getItem('savedSort');
+            const form = document.getElementById('yourFormId'); // Replace 'yourFormId' with your actual form id
+            const selectedCategoryInput = document.getElementById('selectedCategory'); // Get the hidden input for selected category
+            const selectedCategory = selectedCategoryInput.value;
+
+            console.log('Selected Category:', selectedCategory);
+            console.log('Saved Sort Option:', savedSort);
+        
+            if (savedSort) {
+                sortDropdown.value = savedSort;
+            }
+        
+            sortDropdown.addEventListener('change', function () {
+                console.log('Selected Sort Option:', this.value);
+                localStorage.setItem('savedSort', this.value);
+        
+                // Append the selected category to the form action URL
+                form.action = '/product-list?' + selectedCategoryInput.name + '=' + selectedCategoryInput.value + '&sort=' + this.value;
+                form.submit();
+            });
+        });
+    </script>
+    
+    
+    
+    
+<!-- Add this script at the end of your HTML body or in the head section -->
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Delegated event handling for the parent container
+        $('.filter-items').on('change', '.custom-control-input', function() {
+            var checkbox = $(this);
+
+            // Uncheck other checkboxes in the same category group
+            var categoryId = checkbox.data('category');
+            $('.custom-control-input[data-category="' + categoryId + '"]').not(checkbox).prop('checked', false);
+
+            // Update the UI to show/hide the check icon based on checkbox state
+            updateCheckIcons();
+
+            // If the checkbox is checked, navigate to the category page
+            if (checkbox.prop('checked')) {
+                window.location.href = '/product-list?category=' + categoryId + '&sort=asc';
+            }
+        });
+
+        // Initial update to handle the checkbox state on page load
+        updateCheckIcons();
+
+        function updateCheckIcons() {
+            $('.custom-control-input').each(function() {
+                var checkbox = $(this);
+                var categoryLabel = checkbox.siblings('.custom-control-label');
+                var isSelected = checkbox.prop('checked');
+
+                // Add or remove the check icon based on checkbox state
+                if (isSelected) {
+                    categoryLabel.find('.fa-check').remove(); // Remove any existing check icons
+                    categoryLabel.append('<i class="fas fa-check"></i>');
+                } else {
+                    categoryLabel.find('.fa-check').remove();
+                }
+            });
+        }
+    });
+</script>
+
+
+
+
+    <%- include('../layout/productfooter.ejs') %>
