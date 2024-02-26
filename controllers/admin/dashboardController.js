@@ -7,9 +7,8 @@ const { order } = require('./orderController');
 
 async function generatePDF() {
     // Launch a new browser instance
-    const browser = await puppeteer.launch({
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
-  });
+    const browser = await puppeteer.launch();
+
     // Create a new page
     const page = await browser.newPage();
 
@@ -171,7 +170,7 @@ async function generatePDF() {
     const page = await browser.newPage();
 
     
-    await page.goto('https://www.akshays.xyz/admin/getUserDetailsAndOrders', { waitUntil: 'networkidle0' });
+    await page.goto('http://localhost:3000/admin/getUserDetailsAndOrders', { waitUntil: 'networkidle0' });
 
     // Generate the PDF from the page content
     const pdf = await page.pdf({ format: 'A4' });
