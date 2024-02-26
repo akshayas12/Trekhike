@@ -170,7 +170,7 @@ async function generatePDF() {
     const page = await browser.newPage();
 
     
-    await page.goto('http://localhost:3000/admin/getUserDetailsAndOrders', { waitUntil: 'networkidle0' });
+    await page.goto('https://www.akshays.xyz/admin/getUserDetailsAndOrders', { waitUntil: 'networkidle0' });
 
     // Generate the PDF from the page content
     const pdf = await page.pdf({ format: 'A4' });
