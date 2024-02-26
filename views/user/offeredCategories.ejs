@@ -104,62 +104,51 @@
 </header><!-- End .header -->
 
 <main class="main">
-<div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
-    <div class="container">
-        <h1 class="page-title">Offer Category</h1>
-    </div><!-- End .container -->
-</div><!-- End .page-header -->
-<nav aria-label="breadcrumb" class="breadcrumb-nav">
-    <div class="container">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/home">Home</a></li>
-            <li class="breadcrumb-item"><a href="/product-list">shop</a></li>
-          
-            <li class="breadcrumb-item active" aria-current="page">Offer Categoryes</li>
-        </ol>
-    </div><!-- End .container -->
-</nav><!-- End .breadcrumb-nav -->
-<div class="card" style="padding: 30px;">
-    <br>
-    <br>
-  
-    
-    <h2>Offered Categories</h2>
-
-    <div class="row">
-        <% offeredCategories.forEach((category, index) => { %>
-            <% if (category.offer && category.offer.amount && category.offer.endDate) { %>
-                <% const currentDate = new Date(); %>
-                <% const offerEndDate = new Date(category.offer.endDate); %>
-                <% if (currentDate <= offerEndDate) { %>
-                    <% if (index % 3 === 0) { %>
-                        </div>
-                        <div class="row">
-                    <% } %>
-                    <div class="col">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title"><%= category.categoryName %></h5>
-                                <div class="card-text">
-                                    <p class="offer-amount"><%= category.offer.amount %>% OFF</p>
-                                    <p class="offer-end-date">Offer valid until: <%= category.offer.endDate.toLocaleDateString() %></p>
-                                    <a href="/category/<%= category._id %>/products" class="view-products-link">View Products</a>
+    <div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
+        <div class="container">
+            <h1 class="page-title">Offer Category</h1>
+        </div><!-- End .container -->
+    </div><!-- End .page-header -->
+    <nav aria-label="breadcrumb" class="breadcrumb-nav">
+        <div class="container">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/home">Home</a></li>
+                <li class="breadcrumb-item"><a href="/product-list">Shop</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Offer Categoryes</li>
+            </ol>
+        </div><!-- End .container -->
+    </nav><!-- End .breadcrumb-nav -->
+    <div class="card" style="padding: 30px;">
+        <h2>Offered Categories</h2>
+        <div class="row">
+            <% offeredCategories.forEach((category, index) => { %>
+                <% if (category.offer && category.offer.amount && category.offer.endDate) { %>
+                    <% const currentDate = new Date(); %>
+                    <% const offerEndDate = new Date(category.offer.endDate); %>
+                    <% if (currentDate <= offerEndDate) { %>
+                        <% if (index % 3 === 0) { %>
+                            </div>
+                            <div class="row">
+                        <% } %>
+                        <div class="col">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title"><%= category.categoryName %></h5>
+                                    <div class="card-text">
+                                        <p class="offer-amount"><%= category.offer.amount %>% OFF</p>
+                                        <p class="offer-end-date">Offer valid until: <%= category.offer.endDate.toLocaleDateString() %></p>
+                                        <a href="/category/<%= category._id %>/products" class="view-products-link">View Products</a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    <% } %>
                 <% } %>
-            <% } %>
-        <% }); %>
+            <% }); %>
+        </div>
+        <a href="/product-list" class="back-to-categories">Back to Categories</a>
     </div>
-    
-    
-    
-<a href="/product-list" class="back-to-categories">Back to Categories</a>
-    </div>
-</div>
-</main><!-- End .main -->
-
+</main>
 <footer class="footer">
 <div class="footer-middle">
     <div class="container">
