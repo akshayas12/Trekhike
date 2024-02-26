@@ -85,6 +85,7 @@
 
  
 </style>
+
        <!-- Sidebar Start -->
        <div class="sidebar pe-4 pb-3">
            <nav class="navbar bg-secondary navbar-dark">
@@ -225,60 +226,95 @@
                <div class="bg-secondary rounded-topx"> 
                     <div class="row"> 
                        <!-- <div class="content"> -->
-                           <h2 id ="ff" class="mb-5">Product  Management</h2>
-                           <div class="container">
-                                   <h5><a href="/admin/add-coupon">Add Coupon</a></h3>
-                               <div class="table-responsive custom-table-responsive">
-                                   <table class="table custom-table pt-4">
-                                       <thead>
-                                       <tr>
-                                           <th scope="col">
-                                               <label class="control control--checkbox">
-                                                  
-                                               </label>
-                                           </th>
-                                           <th scope="col">Coupon Name</th>
-                                           <th scope="col">Coupon Code</th>
-                                           <th scope="col">Discount Type</th>
-                                           <th scope="col">Discount Value</th>
-                                           <th scope="col">Expiration Date</th>
-                                           <th scope="col">Total Uses</th>
-                                           <th scope="col">Uses Per User</th>
-                                           <th scope="col">Min Order Amount</th>
-                                           <th scope="col">Description</th>
-                                           <th scope="col">Action</th>
-                                           
-                                       </tr>
-                                       </thead>
-                                       <tbody>
-                                        <% for (var i = 0; i < coupon.length; i++) { %>
+                           <h2 id ="ff" class="mb-5">Coupon  Management</h2>
+                       <div class="container">
+    <h5><a href="/admin/add-coupon">Add Coupon</a></h5>
+    <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names..">
+    <div class="table-responsive custom-table-responsive">
+        <table class="table custom-table pt-4" id="myTable">
+            <thead>
+            <tr>
+                <th scope="col">Coupon Name</th>
+                <th scope="col">Coupon Code</th>
+                <th scope="col">Discount Type</th>
+                <th scope="col">Discount Value</th>
+                <th scope="col">Expiration Date</th>
+                <th scope="col">Total Uses</th>
+                <th scope="col">Uses Per User</th>
+                <th scope="col">Min Order Amount</th>
+                <th scope="col">Description</th>
+                <th scope="col">Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <% for (var i = 0; i < coupon.length; i++) { %>
+            <tr>
+                <td><%= coupon[i].couponname %></td>
+                <td><%= coupon[i].code %></td>
+                <td><%= coupon[i].type%></td>
+                <td><%= coupon[i].value%></td>
+                <td><%= coupon[i].expirationDate ? coupon[i].expirationDate.toLocaleDateString() : '' %></td>
+                <td><%= coupon[i].usageLimits.totalUses%></td>
+                <td><%= coupon[i].usageLimits.perUser %></td>
+                <td><%= coupon[i].conditions.minOrderAmount%></td>
+                <td><%=coupon[i].description%></td>
+                <td>
+                    <button class="btn">  <a href="/admin/edit-coupon/<%=coupon[i]._id %>">Edit</a></button>
+                    <button class="btn"> <a href="/admin/loadcoupon/<%=coupon[i]._id %>">Delete</a></button>
+                </td>
+            </tr>
+            <% } %>
+            </tbody>
 
-                                          <tr>
-                                           <td><%= i+1 %></td>
-                                           
-                                           <td><%= coupon[i].couponname %></td>
-                                           <td><%= coupon[i].code %></td>
-                                           <td><%= coupon[i].type%></td>
-                                           <td><%= coupon[i].value%></td>
-                                           <td><%= coupon[i].expirationDate ? coupon[i].expirationDate.toLocaleDateString() : '' %></td>
-                                           <td><%= coupon[i].usageLimits.totalUses%></td>
-                                           <td><%= coupon[i].usageLimits.perUser %></td>
-                                          <td><%= coupon[i].conditions.minOrderAmount%></td>
-                                          <td><%=coupon[i].description%></td>
-                                            <td>                                 
-                                            <button class="btn">  <a href="/admin/edit-coupon/<%=coupon[i]._id %>">Edit</a></button> 
-                                            <button class="btn"> <a href="/admin/loadcoupon/<%=coupon[i]._id %>">Delete</a></button> 
-                                           <td>
-                                            
-                                        </tr>
-                                        <% } %>
-                                       </tbody>
-                                       
-                                   </table>
-                                   <a href="/admin/adminhome">Back To Home</a>
-                               </div>
-                           </div>
-                       <!-- </div> -->
+            
+        </table>
+     
+        <a href="/admin/adminhome">Back To Home</a>
+
+        <tfoot>
+            <tr>
+                <td colspan="10">
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                            </li>
+                            <li class="page-item active" aria-current="page">
+                                <a class="page-link" href="#">1 <span class="sr-only">(current)</span></a>
+                            </li>
+                            
+                            <li class="page-item">
+                                <a class="page-link" href="#">Next</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </td>
+            </tr>
+        </tfoot>
+    </div>
+</div>
+
+<script>
+function myFunction() {
+  var input, filter, table, tr, td, i, txtValue;
+  input = document.getElementById("myInput");
+  filter = input.value.toUpperCase();
+  table = document.getElementById("myTable");
+  tr = table.getElementsByTagName("tr");
+  for (i = 0; i < tr.length; i++) {
+    td = tr[i].getElementsByTagName("td")[0];
+    if (td) {
+      txtValue = td.textContent || td.innerText;
+      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+      } else {
+        tr[i].style.display = "none";
+      }
+    }       
+  }
+}
+</script>
+  <!-- </div> -->
                       
                        
                        <script src="js/jquery-3.3.1.min.js"></script>
