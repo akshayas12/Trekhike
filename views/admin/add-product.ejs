@@ -303,7 +303,11 @@ function displayImagePreview(input) {
              if (offerAmount && offerEndDate.trim() === "") {
             document.getElementById('offerEndDateError').innerText = "Offer End Date is required";
             return false;
+        }else if (offerAmount && new Date(offerEndDate) <= new Date()) {
+            document.getElementById('offerEndDateError').innerText = "Offer End Date must be in the future";
+            return false;
         }
+
 
 
         //discription validation
