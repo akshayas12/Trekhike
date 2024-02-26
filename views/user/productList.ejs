@@ -167,6 +167,47 @@ if(typeof message !=='undefined'){
             </div><!-- End .header-middle -->
         </header><!-- End .header -->
 
+        <div id="categoryOffersCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner"  >
+                <% offeredCategories.forEach((category, index) => { %>
+                    <% if (category.offer && category.offer.amount && category.offer.endDate) { %>
+                        <% const currentDate = new Date(); %>
+                        <% const offerEndDate = new Date(category.offer.endDate); %>
+                        <% if (currentDate <= offerEndDate) { %>
+                            <div class="carousel-item <%= index === 0 ? 'active' : '' %>">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="card" style="position: relative; display: flex; justify-content: center; align-items: center;">
+                                                <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: url('/images/carousel.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat; opacity: 0.2; pointer-events: none;"></div>
+                                                <div class="card-body text-center">
+                                                    <h5 class="card-title"><%= category.categoryName %></h5>
+                                                    <div class="card-text">
+                                                        <h3> <p style="font-weight: bold; color: green;" class="offer-amount"><%= category.offer.amount %>% OFF</p></h3>
+                                                        <p class="offer-end-date" style="color: red;">Offer valid until: <%= category.offer.endDate.toLocaleDateString() %></p>
+                                                     <button style="border: none;" >   <a href="/category/<%= category._id %>/products" style="font-size: 20px; color: rgba(32, 126, 214, 0.791);" class="view-products-link">View Products</a></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <% } %>
+                    <% } %>
+                <% }); %>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#categoryOffersCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#categoryOffersCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
         <main class="main">
         	<div class="page-header text-center" style="background-image: url('user/images/page-header-bg.jpg')">
         		<div class="container">
@@ -176,47 +217,7 @@ if(typeof message !=='undefined'){
             <nav aria-label="breadcrumb" class="breadcrumb-nav mb-2">
                 
             </nav><!-- End .breadcrumb-nav -->
-            <div id="categoryOffersCarousel" class="carousel slide" data-bs-ride="carousel">
-                <div class="carousel-inner"  >
-                    <% offeredCategories.forEach((category, index) => { %>
-                        <% if (category.offer && category.offer.amount && category.offer.endDate) { %>
-                            <% const currentDate = new Date(); %>
-                            <% const offerEndDate = new Date(category.offer.endDate); %>
-                            <% if (currentDate <= offerEndDate) { %>
-                                <div class="carousel-item <%= index === 0 ? 'active' : '' %>">
-                                    <div class="container">
-                                        <div class="row">
-                                            <div class="col">
-                                                <div class="card" style="position: relative; display: flex; justify-content: center; align-items: center;">
-                                                    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: url('/images/carousel.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat; opacity: 0.2; pointer-events: none;"></div>
-                                                    <div class="card-body text-center">
-                                                        <h5 class="card-title"><%= category.categoryName %></h5>
-                                                        <div class="card-text">
-                                                            <h3> <p style="font-weight: bold; color: green;" class="offer-amount"><%= category.offer.amount %>% OFF</p></h3>
-                                                            <p class="offer-end-date" style="color: red;">Offer valid until: <%= category.offer.endDate.toLocaleDateString() %></p>
-                                                         <button style="border: none;" >   <a href="/category/<%= category._id %>/products" style="font-size: 20px; color: rgba(32, 126, 214, 0.791);" class="view-products-link">View Products</a></button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                
-                                                
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            <% } %>
-                        <% } %>
-                    <% }); %>
-                </div>
-                <button class="carousel-control-prev" type="button" data-bs-target="#categoryOffersCarousel" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Previous</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#categoryOffersCarousel" data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Next</span>
-                </button>
-            </div>
+           
             
             <div class="page-content">
                 <div class="container">
