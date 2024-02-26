@@ -48,10 +48,30 @@
   position: absolute;
   left: 0;
   top: 0;
-  color: green; /* Adjust as needed */
+  color: rgba(236, 175, 22, 0.724); /* Adjust as needed */
   font-size: 16px; /* Adjust as needed */
 }
 
+  /* Adjust the size and style of carousel control buttons */
+  .carousel-control-prev, .carousel-control-next {
+        width: 70px; /* Adjust width as needed */
+        height: 140px; /* Adjust height as needed */
+        margin-top: 2px;
+        margin-left: 170px;
+        margin-right: 170px;
+        background-color: rgba(240, 246, 245, 0.959); /* Change background color */
+        border: none; /* Remove border */
+        border-radius: 10%; /* Make it round */
+        color: black;
+    }
+
+    /* Adjust the size and color of the icon inside the buttons */
+    .carousel-control-prev-icon, .carousel-control-next-icon {
+        width: 50px; /* Adjust width of the icon */
+        height: 20px; /* Adjust height of the icon */
+        color: rgb(11, 11, 11); /* Change icon color */
+        background-color: transparent; /* Remove icon background color */
+    }
 
 </style>
 <%
@@ -152,21 +172,57 @@ if(typeof message !=='undefined'){
         		</div><!-- End .container -->
         	</div><!-- End .page-header -->
             <nav aria-label="breadcrumb" class="breadcrumb-nav mb-2">
-                <div class="container">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="/home">Home</a></li>
-                        <li class="breadcrumb-item"><a href="#">Shop</a></li>
-                    </ol>
-                </div><!-- End .container -->
+                
             </nav><!-- End .breadcrumb-nav -->
-
+            <div id="categoryOffersCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner"  >
+                    <% offeredCategories.forEach((category, index) => { %>
+                        <% if (category.offer && category.offer.amount && category.offer.endDate) { %>
+                            <% const currentDate = new Date(); %>
+                            <% const offerEndDate = new Date(category.offer.endDate); %>
+                            <% if (currentDate <= offerEndDate) { %>
+                                <div class="carousel-item <%= index === 0 ? 'active' : '' %>">
+                                    <div class="container">
+                                        <div class="row">
+                                            <div class="col">
+                                                <div class="card" style="position: relative; display: flex; justify-content: center; align-items: center;">
+                                                    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: url('/images/carousel.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat; opacity: 0.2; pointer-events: none;"></div>
+                                                    <div class="card-body text-center">
+                                                        <h5 class="card-title"><%= category.categoryName %></h5>
+                                                        <div class="card-text">
+                                                            <h3> <p style="font-weight: bold; color: green;" class="offer-amount"><%= category.offer.amount %>% OFF</p></h3>
+                                                            <p class="offer-end-date" style="color: red;">Offer valid until: <%= category.offer.endDate.toLocaleDateString() %></p>
+                                                         <button style="border: none;" >   <a href="/category/<%= category._id %>/products" style="font-size: 20px; color: rgba(32, 126, 214, 0.791);" class="view-products-link">View Products</a></button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            <% } %>
+                        <% } %>
+                    <% }); %>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#categoryOffersCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#categoryOffersCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+            
             <div class="page-content">
                 <div class="container">
                 	<div class="row">
                 		<div class="col-lg-9">
                 			<div class="toolbox">
                 				<div class="toolbox-left">
-                					<a href="/view-offered-categories">View Offered Categories</a>
+                					<!-- <a href="/view-offered-categories">View Offered Categories</a> -->
 
                 				</div><!-- End .toolbox-left -->
 
@@ -303,13 +359,13 @@ if(typeof message !=='undefined'){
                                             <div class="widget-body">
                                                 <div class="filter-items filter-items-count">
                                                   
-                                                    <a href="/product-list" class="category-link">All Products</a>
+                                                  <a href="/product-list" style="color: #e7780a;"  class="category-link">All Products</a>
                                                   
                                                     <% categories.forEach(category => { %>
                                                         <% if (!category.blocked) { %> <!-- Check if the category is not blocked -->
                                                             <div class="filter-item">
                                                                 <div class="custom-control custom-checkbox">
-                                                                    <a href="/product-list?category=<%= category._id %>&sort=<%= sortDropdownValue %>" class="category-link">
+                                                                    <a style="color: #e7780a; font-weight: 100;" href="/product-list?category=<%= category._id %>&sort=<%= sortDropdownValue %>" class="category-link">
                                                                         <%= category.categoryName %>
                                                                         <% if(category.isSelected) { %>
                                                                             <i class="fas fa-check"></i> <!-- Add your check icon class or HTML here -->
@@ -324,8 +380,8 @@ if(typeof message !=='undefined'){
                                                     
                                                     <!-- Add this inside the toolbox-right section -->
                                                     <div class="toolbox-layout">
-                                                        <label for="sort" style="color: #e7780a;">Sort by:</label><br>
-                                                        <select id="sort" name="sort" style="color: #e7780a;" onchange="this.form.submit()">
+                                                        <label for="sort" style="color: #e7780a; font-size: large;">Sort by:</label><br>
+                                                        <select  id="sort" name="sort" style="color: #e7780a;" onchange="this.form.submit()">
                                                             <option value="asc">Price Low to High</option>
                                                             <option value="desc">Price High to Low</option>
                                                         </select>
@@ -707,6 +763,27 @@ if(typeof message !=='undefined'){
             </div><!-- End .modal-content -->
         </div><!-- End .modal-dialog -->
     </div><!-- End .modal -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Wait for the document to be fully loaded
+        document.addEventListener("DOMContentLoaded", function () {
+            // Initialize the carousel
+            var myCarousel = new bootstrap.Carousel(document.querySelector('#categoryOffersCarousel'), {
+                interval: false // Disable auto-sliding
+            });
+
+            // Handle previous button click
+            document.querySelector('.carousel-control-prev').addEventListener('click', function () {
+                myCarousel.prev(); // Move to the previous slide
+            });
+
+            // Handle next button click
+            document.querySelector('.carousel-control-next').addEventListener('click', function () {
+                myCarousel.next(); // Move to the next slide
+            });
+        });
+    </script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const sortDropdown = document.getElementById('sort');
