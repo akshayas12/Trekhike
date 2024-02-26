@@ -121,8 +121,17 @@
 .button:hover {
   background-color: #45a049;
 }
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%; /* Make sidebar full width on smaller screens */
+    }
 
+    .dashboard-box {
+        width: 100%; /* Make dashboard boxes full width on smaller screens */
+    }
+}
 </style>
+<div class="container-fluid">
 
         <!-- Sidebar Start -->
         <div class="maindiv">
@@ -575,4 +584,5 @@ function fetchData(period) {
                 }
             });
         </script>
+</div>
         <%- include('../layout/adminfooter.ejs') %>
