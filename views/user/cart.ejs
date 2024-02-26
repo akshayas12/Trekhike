@@ -649,7 +649,7 @@ document.addEventListener('DOMContentLoaded', function () {
       const newTotalPrice = currentQuantity * productPrice;
 
       if (!isNaN(newTotalPrice)) {
-        totalSpan.textContent = `$${newTotalPrice.toFixed(2)}`;
+        totalSpan.textContent = `${newTotalPrice.toFixed(2)}`;
 
         // Trigger the cart total update
         updateCartTotal();
