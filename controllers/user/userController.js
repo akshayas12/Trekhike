@@ -122,52 +122,58 @@ const register= async(req,res)=>{
 
 }
 //user register  and generate otp
-const userData= async(req,res)=>{
-    try{
-      const sequirepass=await strongPassword(req.body.password)
-      const data=new User({
-        name:req.body.name,
-        email:req.body.email,
-        password:sequirepass,
-        phone:req.body.phone,
-        image:req.file.filename,
-        is_admin:0,
+const userData = async (req, res) => {
+  try {
+      const sequirepass = await strongPassword(req.body.password);
+      const data = new User({
+          name: req.body.name,
+          email: req.body.email,
+          password: sequirepass,
+          phone: req.body.phone,
+          image: req.file.filename,
+          is_admin: 0,
+      });
 
-      })
-      //check if the user exists in the database
-          const existingUser=await User.findOne({email:data.email})
-          if(existingUser){
-             res.render('register',{message:"user already exists.please choose diffrent email "})
-             return;
-          }
-      const user=await data.save(); 
+      // Check if the user exists in the database based on email
+      const existingUserEmail = await User.findOne({ email: data.email });
+      if (existingUserEmail) {
+          res.render('register', { message: "User already exists. Please choose a different email." });
+          return;
+      }
 
-      if(user){
-        //gerete otp if the user is true
-        const otp =randomstring.generate({
-            length: 6,
-            charset: 'numeric',
+      // Check if the mobile number exists in the database
+      const existingUserPhone = await User.findOne({ phone: data.phone });
+      if (existingUserPhone) {
+          res.render('register', { message: "Mobile number already exists. Please choose a different mobile number." });
+          return;
+      }
+
+      const user = await data.save();
+
+      if (user) {
+          // Generate OTP
+          const otp = randomstring.generate({
+              length: 6,
+              charset: 'numeric',
           });
 
-          //store otp in the user otp filed
-          user.otp=otp;
+          // Store OTP in the user's otp field
+          user.otp = otp;
           await user.save();
           console.log("OTP set:", user.otp);
-          //send otp to email
-        verifyMail(req.body.name,req.body.email,otp);
-        // res.render('register',{message:"Registration success full  verify your mail"})
-        res.render('otp',{userId:user.id});
-    }
-      else{
-        res.render('register',{message:"Registration failed"})
+
+          // Send OTP to email
+          verifyMail(req.body.name, req.body.email, otp);
+          res.render('otp', { userId: user.id });
+      } else {
+          res.render('register', { message: "Registration failed" });
       }
-      
-    }catch(error){
-        console.log(error.message);
-    }
-    
- 
+
+  } catch (error) {
+      console.log(error.message);
+  }
 }
+
 
 // Verify OTP and render email or error page
 // const verify = async (req, res) => {
@@ -468,6 +474,9 @@ const viewProductList = async (req, res) => {
       .skip((page - 1) * perPage)
       .limit(perPage);
 
+    // Fetch offered categories
+    const offeredCategories = await Category.find({ offer: { $exists: true } });
+
     res.render('productList', { 
       products, 
       categories, 
@@ -475,13 +484,15 @@ const viewProductList = async (req, res) => {
       sortDropdownValue: sortOption, 
       searchQuery,
       currentPage: page,
-      totalPages
+      totalPages,
+      offeredCategories // Pass offeredCategories to the template
     });
   } catch (error) {
     console.log(error.message);
     res.render('error', { error });
   }
 };
+
 
 
 
@@ -629,8 +640,6 @@ const forgotpassword=async(req,res)=>{
    if(tokenData){
     res.render('forgot-password',{userId:tokenData._id});
 
-   }else{
-    res.render('404',{message:"Token is invalid."});
    }
   } catch (error) {
     console.log(error.message);
