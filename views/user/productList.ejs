@@ -1,4 +1,6 @@
 <%- include('../layout/productheader') %>
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
 <style>
     .header-search-wrapper {
     position: relative;
@@ -55,10 +57,10 @@
   /* Adjust the size and style of carousel control buttons */
   .carousel-control-prev, .carousel-control-next {
         width: 70px; /* Adjust width as needed */
-        height: 140px; /* Adjust height as needed */
+        height: 146px; /* Adjust height as needed */
         margin-top: 2px;
-        margin-left: 170px;
-        margin-right: 170px;
+        margin-left: 200px;
+        margin-right: 200px;
         background-color: rgba(240, 246, 245, 0.959); /* Change background color */
         border: none; /* Remove border */
         border-radius: 10%; /* Make it round */
@@ -359,18 +361,18 @@ if(typeof message !=='undefined'){
                                             <div class="widget-body">
                                                 <div class="filter-items filter-items-count">
                                                   
-                                                  <a href="/product-list" style="color: #e7780a;"  class="category-link">All Products</a>
+                                                 <h3> <a href="/product-list" style="color: #e7780a;"  class="category-link">All Products</a></h3>
                                                   
                                                     <% categories.forEach(category => { %>
                                                         <% if (!category.blocked) { %> <!-- Check if the category is not blocked -->
                                                             <div class="filter-item">
                                                                 <div class="custom-control custom-checkbox">
-                                                                    <a style="color: #e7780a; font-weight: 100;" href="/product-list?category=<%= category._id %>&sort=<%= sortDropdownValue %>" class="category-link">
+                                                                    <h4><a style="color: #e7780a; font-weight: 100;" href="/product-list?category=<%= category._id %>&sort=<%= sortDropdownValue %>" class="category-link">
                                                                         <%= category.categoryName %>
                                                                         <% if(category.isSelected) { %>
                                                                             <i class="fas fa-check"></i> <!-- Add your check icon class or HTML here -->
                                                                         <% } %>
-                                                                    </a>
+                                                                    </a></h4>
                                                                 </div><!-- End .custom-checkbox -->
                                                             </div><!-- End .filter-item -->
                                                         <% } %>
