@@ -288,6 +288,9 @@
         if (offerAmount && offerEndDate.trim() === "") {
             document.getElementById('offerEndDateError').innerText = "Offer End Date is required";
             event.preventDefault();
+        }else if (offerAmount && new Date(offerEndDate) <= new Date()) {
+            document.getElementById('offerEndDateError').innerText = "Offer End Date must be in the future";
+            return false;
         }
 
             // description validation
