@@ -83,7 +83,32 @@
     transition: background-color 0.3s ease;
 }
 
-    /* Add any additional styles you need for your specific design */
+.pagination {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.pagination a {
+    display: inline-block;
+    padding: 8px 16px;
+    text-decoration: none;
+    color: black;
+    border: 1px solid #ddd;
+    margin: 0 4px;
+}
+
+.pagination a.active {
+    background-color: #007bff;
+    color: white;
+    border: 1px solid #007bff;
+}
+
+.pagination a:hover:not(.active) {
+    background-color: #ddd;
+}
+
+
+
 </style>
         <!-- Sidebar Start -->
         <div class="sidebar pe-4 pb-3">
