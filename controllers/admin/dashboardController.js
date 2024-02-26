@@ -7,8 +7,9 @@ const { order } = require('./orderController');
 
 async function generatePDF() {
     // Launch a new browser instance
-    const browser = await puppeteer.launch();
-
+    const browser = await puppeteer.launch({
+      args: ['--no-sandbox', '--disable-setuid-sandbox']
+  });
     // Create a new page
     const page = await browser.newPage();
 
