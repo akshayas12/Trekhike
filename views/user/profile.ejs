@@ -4,7 +4,36 @@
     border: 1px solid #000;
     /* Other styles */
 }
-
+input[readonly] {
+        cursor: pointer; /* Change cursor to pointer (hand) when hovering over the input */
+    }
+    #referralCodeField {
+            width: 50%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f5f5f5;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+        #referralCodeField:focus {
+            outline: none;
+            border-color: #007bff;
+            background-color: #fff;
+        }
+        button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
 </style>
 <div class="header-middle sticky-header">
     <div class="container">
@@ -170,6 +199,17 @@
                           <a href="/wallet" >  <button type="button" class="btn btn-primary btn-rounded btn-lg" style="width: 300px;">
                            Wallet
                           </button></a>
+                          <h4>Your Referral Code:</h4>
+                          <input type="text" id="referralCodeField" value="<%=user.referralCode%>" readonly>
+                          <button onclick="copyReferralCode()">Copy</button>
+                          <script>
+                            function copyReferralCode() {
+                                const referralCodeField = document.getElementById("referralCodeField");
+                                referralCodeField.select(); // Select the text inside the input field
+                                document.execCommand("copy"); // Copy the selected text to clipboard
+                                alert("Referral code copied!"); // Show a confirmation message
+                            }
+                        </script>                   
                         </div>
                       </div>
               
@@ -203,8 +243,13 @@
         <button  style="border: 2px solid black;"><a href="/change-password">change Password</a></button><br><br>
         
             <input type="submit" class="btn btn-primary" value="Update Profile">
+
+
+          
           </form>
         
+
+
           <script>
             function validateForm() {
               var name = document.getElementById('editName').value;

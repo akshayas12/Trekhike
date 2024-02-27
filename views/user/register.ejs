@@ -47,6 +47,22 @@
     <input type="file" class="text" name="image" id="image">
     <span id="imageError" class="error"></span>
     <br>
+
+    <label for="enableInput">Referral code:(optional)</label>
+    <input type="text" id="optionalField" name="referralCodeUsed" style="height: 35px;" placeholder="Enter optional text">
+    <br>
+    <script>
+        function toggleInput() {
+            const optionalField = document.getElementById("optionalField");
+            const enableInput = document.getElementById("enableInput");
+
+            if (enableInput.checked) {
+                optionalField.removeAttribute("disabled");
+            } else {
+                optionalField.setAttribute("disabled", true);
+            }
+        }
+    </script>
     <button class="signin">
       SIGNUP
     </button>
@@ -65,10 +81,6 @@
 </body>
 </html> 
  
-
-
-  
-
     <script>
       function validateForm() {
         document.getElementById('usernameError').innerText = '';

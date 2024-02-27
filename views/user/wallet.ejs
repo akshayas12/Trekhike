@@ -124,6 +124,7 @@
                                     <th>Date</th>
                                     <th>Type</th>
                                     <th>Amount</th>
+                                    <th>Description</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -132,6 +133,7 @@
                                         <td><%= transaction.timestamp.toLocaleString() %></td>
                                         <td><%= transaction.type.charAt(0).toUpperCase() + transaction.type.slice(1) %></td>
                                         <td>$<%= transaction.amount.toFixed(2) %></td>
+                                        <td><%= transaction.description %></td>
                                     </tr>
                                 <% }) %>
                             </tbody>
