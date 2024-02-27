@@ -1,4 +1,6 @@
 const mongoose=require("mongoose");
+const crypto = require('crypto');
+
 
  const userSchema = new mongoose.Schema({
     name:{
@@ -71,7 +73,23 @@ const mongoose=require("mongoose");
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Address',
       },
-      
+      referralCode: {
+         type: String,
+         default: function() {
+             return crypto.randomBytes(8).toString('hex');
+         },
+         unique: true
+     },
+     referralCount: {
+         type: Number,
+         default: 0
+     },
+     referralCodeUsed:{
+      type:String,
+      default:false
+     },
+
+
      token:{
         type:String,
         default:''
