@@ -38,7 +38,7 @@ router.post('/resend-otp/:userId',userController.resendOTP);
 
 router.get('/view-offered-categories', userController.viewOfferedCategories);
 router.get('/category/:categoryId/products', userController.viewOfferedCategoriesProducts);
-
+router.get('/errorload',userController.errorload)
 router.get('/editProfileImage', userController.viewEditProfileImage);
 router.post('/updateProfileImage', upload.single('image'), userController.updateProfileImage);
 

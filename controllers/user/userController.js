@@ -605,14 +605,22 @@ const viewProductList = async (req, res) => {
       offeredCategories // Pass offeredCategories to the template
     });
   } catch (error) {
-    console.log(error.message);
-    res.status(500).send('An error occurred while processing your request. Please try again later.');
+    // Log the error to the console
+    console.error('Error occurred while processing request:', error);
+    // Render the error page with an error message
+    res.status(500).render('error', { errorMessage: 'An error occurred while processing your request. Please try again later.' });
   }
-  
 };
 
 
+const errorload=async(req,res)=>{
+  try {
+    res.status(500).render('error', { errorMessage: 'An error occurred.' });
 
+  } catch (error) {
+    
+  }
+}
 
 const viewOfferedCategories = async (req, res) => {
   try {
@@ -1515,6 +1523,7 @@ module.exports={
     loadchangepassword,
     viewOfferedCategories,
     viewOfferedCategoriesProducts,
-    requestReturn
+    requestReturn,
+    errorload
 
 }
