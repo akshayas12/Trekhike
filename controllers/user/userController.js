@@ -6,6 +6,7 @@ const Coupon=require('../../models/couponModel')
 const Order=require('../../models/orderModel');
 const mongoose = require('mongoose');
 const path = require('path');
+const crypto = require('crypto');
 
 const uuid = require('uuid');
 
@@ -122,6 +123,67 @@ const register= async(req,res)=>{
 
 }
 //user register  and generate otp
+// const userData = async (req, res) => {
+//   try {
+//       const sequirepass = await strongPassword(req.body.password);
+//       const data = new User({
+//           name: req.body.name,
+//           email: req.body.email,
+//           password: sequirepass,
+//           phone: req.body.phone,
+//           image: req.file.filename,
+//           is_admin: 0,
+//       });
+
+//       // Check if the user exists in the database based on email
+//       const existingUserEmail = await User.findOne({ email: data.email });
+//       if (existingUserEmail) {
+//           res.render('register', { message: "User already exists. Please choose a different email." });
+//           return;
+//       }
+
+//       // Check if the mobile number exists in the database
+//       const existingUserPhone = await User.findOne({ phone: data.phone });
+//       if (existingUserPhone) {
+//           res.render('register', { message: "Mobile number already exists. Please choose a different mobile number." });
+//           return;
+//       }
+
+//       const user = await data.save();
+
+//       if (user) {
+//           // Generate OTP
+//           const otp = randomstring.generate({
+//               length: 6,
+//               charset: 'numeric',
+//           });
+
+//           // Store OTP in the user's otp field
+//           user.otp = otp;
+//            // Generate referral code
+//             const referralCode = crypto.randomBytes(8).toString('hex'); 
+
+//            // Set referral code in user record
+//             user.referralCode = referralCode;
+
+
+//           await user.save();
+//           console.log("OTP set:", user.otp);
+
+//           // Send OTP to email
+//           verifyMail(req.body.name, req.body.email, otp);
+//           res.render('otp', { userId: user.id });
+//       } else {
+//           res.render('register', { message: "Registration failed" });
+//       }
+
+//   } catch (error) {
+//       console.log(error.message);
+//   }
+// }
+
+
+
 const userData = async (req, res) => {
   try {
       const sequirepass = await strongPassword(req.body.password);
@@ -132,6 +194,7 @@ const userData = async (req, res) => {
           phone: req.body.phone,
           image: req.file.filename,
           is_admin: 0,
+          referralCodeUsed: req.body.referralCodeUsed, 
       });
 
       // Check if the user exists in the database based on email
@@ -148,6 +211,15 @@ const userData = async (req, res) => {
           return;
       }
 
+      // Check if the referral code exists in the database
+      if (data.referralCodeUsed) {
+          const referrer = await User.findOne({ referralCode: data.referralCodeUsed });
+          if (!referrer) {
+              res.render('register', { message: "Invalid referral code. Please check and try again." });
+              return;
+          }
+      }
+
       const user = await data.save();
 
       if (user) {
@@ -159,12 +231,45 @@ const userData = async (req, res) => {
 
           // Store OTP in the user's otp field
           user.otp = otp;
+           // Generate referral code
+            const referralCode = crypto.randomBytes(8).toString('hex'); 
+
+           // Set referral code in user record
+            user.referralCode = referralCode;
+
           await user.save();
           console.log("OTP set:", user.otp);
 
           // Send OTP to email
           verifyMail(req.body.name, req.body.email, otp);
           res.render('otp', { userId: user.id });
+
+          // If referral code was used, credit both the user and the referrer
+          if (data.referralCodeUsed) {
+              const referrer = await User.findOne({ referralCode: data.referralCodeUsed });
+              if (referrer) {
+                  // Credit the user and the referrer
+                  user.wallet += 50;
+                  referrer.wallet += 50;
+
+                  // Update the wallet history for the user
+                  user.walletHistory.push({
+                      type: 'credit',
+                      amount: 50,
+                      description: 'Received 50 Rs for using referral code',
+                  });
+
+                  // Update the wallet history for the referrer
+                  referrer.walletHistory.push({
+                      type: 'credit',
+                      amount: 50,
+                      description: 'Received 50 Rs for referral',
+                  });
+
+                  await user.save();
+                  await referrer.save();
+              }
+          }
       } else {
           res.render('register', { message: "Registration failed" });
       }
@@ -173,6 +278,18 @@ const userData = async (req, res) => {
       console.log(error.message);
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // Verify OTP and render email or error page
