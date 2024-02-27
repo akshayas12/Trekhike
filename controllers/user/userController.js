@@ -606,7 +606,7 @@ const viewProductList = async (req, res) => {
     });
   } catch (error) {
     console.log(error.message);
-    res.render('error', { error });
+    // res.render('error', { error });
   }
 };
 
