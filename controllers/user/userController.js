@@ -606,8 +606,9 @@ const viewProductList = async (req, res) => {
     });
   } catch (error) {
     console.log(error.message);
-    // res.render('error', { error });
+    res.status(500).send('An error occurred while processing your request. Please try again later.');
   }
+  
 };
 
 
