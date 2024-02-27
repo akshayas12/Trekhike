@@ -5,6 +5,106 @@ const Product=require('../../models/productModel')
 const puppeteer = require('puppeteer');
 const { order } = require('./orderController');
 
+// exports.getUserDetailsAndOrders = async (req, res) => {
+//   try {
+//     // Aggregate user logins by month with month names
+//     const monthlyLogins = await User.aggregate([
+//       {
+//         $group: {
+//           _id: { $month: "$createdAt" },
+//           monthName: { $first: { $dateToString: { format: "%B", date: "$createdAt" } } },
+//           count: { $sum: 1 }
+//         }
+//       },
+//       { $sort: { "_id": 1 } }
+//     ]);
+
+//     // Generate data for all months, filling in missing months with count 0
+//     const allMonths = Array.from({ length: 12 }, (_, index) => {
+//       const month = index + 1;
+//       const monthName = new Date(2000, month - 1, 1).toLocaleString('en-US', { month: 'long' });
+//       return { _id: month, monthName, count: 0 };
+//     });
+
+//     // Merge the aggregated data with the generated data to ensure all months are represented
+//     const mergedData = allMonths.map(month => {
+//       const match = monthlyLogins.find(entry => entry._id === month._id);
+//       return match || month;
+//     });
+
+//     // Fetch most selling product details
+//     const mostSellingProduct = await Order.aggregate([
+//       { $unwind: "$products" },
+//       {
+//         $group: {
+//           _id: "$products.product",
+//           totalQuantitySold: { $sum: "$products.quantity" }
+//         }
+//       },
+//       { $sort: { totalQuantitySold: -1 } },
+//       { $limit: 1 }
+//     ]);
+
+//     const mostSellingProductDetails = await Product.findById(mostSellingProduct[0]._id);
+
+//     // Fetch delivered orders
+//     const deliveredOrders = await Order.find({ status: 'delivered' })
+//     .populate('userId', 'name') // Populate user details
+//     .populate('products.product', 'productName quantity price'); // Populate product details
+
+//     // Count total pending orders
+//     const pendingOrdersCount = await Order.countDocuments({ status: 'Pending' });
+//     const returnOrderCount = await Order.countDocuments({ status: 'Returned' });
+//     const blockUser = await User.countDocuments({ isBlocked: 'true' });
+//     const onlinePayment = await Order.countDocuments({ payment: 'onlinePayment' });
+
+//     // Count total users, total orders, total cancelled orders, total products, and total revenue
+//     const totalUsers = await User.countDocuments();
+//     const totalOrders = await Order.countDocuments();
+//     const cancelledOrders = await Order.countDocuments({ status: 'Cancelled' });
+//     const totalProduct = await Product.countDocuments();
+//     const totalRevenue = await getTotalRevenue();
+
+//     // Render the sales report template with the fetched data
+//     res.render('sales-report', {
+//       totalUsers,
+//       totalOrders,
+//       cancelledOrders,
+//       blockUser,
+//       totalProduct,
+//       totalRevenue,
+//       mergedData,
+//       deliveredOrders,
+//       mostSellingProduct: mostSellingProductDetails,
+//       returnOrderCount,
+//       onlinePayment,
+//       pendingOrdersCount,
+    
+//   }, function(err, html) {
+//     if (err) {
+//       console.error('Error rendering EJS template:', err.message);
+//       return res.status(500).send('Internal Server Error');
+//     }
+
+//     // Convert the rendered HTML to a PDF
+//     pdf.create(html).toBuffer(function(err, buffer) {
+//       if (err) {
+//         console.error('Error generating PDF:', err.message);
+//         return res.status(500).send('An error occurred while generating the PDF.');
+//       }
+
+//       // Send the PDF as a response
+//       res.set({ 'Content-Type': 'application/pdf', 'Content-Length': buffer.length });
+//       res.send(buffer);
+//     });
+//   });
+// } catch (error) {
+//   console.error('Error fetching user details and orders:', error.message);
+//   res.status(500).send('Internal Server Error');
+// }
+// };
+
+
 async function generatePDF() {
     // Launch a new browser instance
     const browser = await puppeteer.launch();
