@@ -27,16 +27,16 @@ const razorpayInstance = new Razorpay({
 });
 
 
-//hasing password
-const strongPassword=async(password)=>{
+const strongPassword = async (password) => {
     try {
-          
-      const passwordHash= await bcrypt.hash(password,10);
-       return passwordHash;
+        const saltRounds = 10;
+        const passwordHash = await bcrypt.hash(password, saltRounds);
+        return passwordHash;
     } catch (error) {
-        console.log(error.message);
+        throw new Error('Error hashing password: ' + error.message);
     }
 }
+
 // send mail
 const verifyMail=async(name,email,otp)=>{
 try {
@@ -355,48 +355,80 @@ const userData = async (req, res) => {
 // }
 
 
+// const verify = async (req, res) => {
+//   try {
+//     const userId = req.params.userId;
+//     const enteredOTP = req.body.otp;
+//     // retrieve user and verify OTP
+//     const user = await User.findById(userId);
+//     if (user) {
+//       const currentTime = Math.floor(new Date().getTime() / 1000);
+//       const otpExpiryTime = user.otp_expiry_time || 0;
+
+//       // Check if the OTP has expired
+//       if (otpExpiryTime > 0 && currentTime > otpExpiryTime) {
+//         // Delete the expired OTP
+//         user.otp = '';
+//         user.otp_expiry_time = 0;
+//         await user.save();
+        
+//         res.render('otp', { userId, message: 'OTP has expired. Please request a new one', expired: true });
+//         return;
+//       }
+
+//       // Check if the entered OTP is correct
+//       if (user.otp === enteredOTP) {
+//         user.is_varified= true;
+//         user.otp_expiry_time = 0;
+//         await user.save();
+//         res.render('email-verified', { userId });
+//         return;
+//       } else {
+//         res.render('otp', { userId, message: 'Incorrect OTP. Please try again.' });
+//       }
+//     } else {
+//       res.status(404).send('User not Found');
+//     }
+//   } catch (error) {
+//     console.log(error.message);
+//     res.status(500).send('Internal Server Error');
+//   }
+// };
+
+
+
 const verify = async (req, res) => {
   try {
-    const userId = req.params.userId;
-    const enteredOTP = req.body.otp;
-    // retrieve user and verify OTP
-    const user = await User.findById(userId);
-    if (user) {
-      const currentTime = Math.floor(new Date().getTime() / 1000);
-      const otpExpiryTime = user.otp_expiry_time || 0;
+      const userId = req.params.userId;
+      const enteredOTP = req.body.otp;
+      const user = await User.findById(userId);
+      if (user) {
+          const currentTime = Math.floor(new Date().getTime() / 1000);
+          const otpExpiryTime = user.otp_expiry_time || 0;
 
-      // Check if the OTP has expired
-      if (otpExpiryTime > 0 && currentTime > otpExpiryTime) {
-        // Delete the expired OTP
-        user.otp = '';
-        user.otp_expiry_time = 0;
-        await user.save();
-        
-        res.render('otp', { userId, message: 'OTP has expired. Please request a new one', expired: true });
-        return;
-      }
+          if (otpExpiryTime > 0 && currentTime > otpExpiryTime) {
+              user.otp = '';
+              user.otp_expiry_time = 0;
+              await user.save();
+              return res.status(400).json({ message: 'OTP has expired. Please request a new one', expired: true });
+          }
 
-      // Check if the entered OTP is correct
-      if (user.otp === enteredOTP) {
-        user.is_varified= true;
-        user.otp_expiry_time = 0;
-        await user.save();
-        res.render('email-verified', { userId });
-        return;
+          if (user.otp === enteredOTP) {
+              user.is_varified = true;
+              user.otp_expiry_time = 0;
+              await user.save();
+              return res.json({ success: true, message: 'Email verified successfully' });
+          } else {
+              return res.status(400).json({ message: 'Incorrect OTP. Please try again.' });
+          }
       } else {
-        res.render('otp', { userId, message: 'Incorrect OTP. Please try again.' });
+          return res.status(404).json({ message: 'User not Found' });
       }
-    } else {
-      res.status(404).send('User not Found');
-    }
   } catch (error) {
-    console.log(error.message);
-    res.status(500).send('Internal Server Error');
+      console.log(error.message);
+      return res.status(500).json({ message: 'Internal Server Error' });
   }
 };
-
-
-
 
 
 
