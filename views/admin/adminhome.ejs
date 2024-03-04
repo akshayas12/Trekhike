@@ -157,7 +157,9 @@
                     <a href="/admin/product" class="nav-item list-group-item"><i class="fa fa-keyboard me-2"></i>Product Management</a>
                     <a href="/admin/loadorder" class="nav-item list-group-item"><i class="fa fa-table me-2"></i>Order Management</a>
                     <a href="/admin/loadcoupon" class="nav-item list-group-item"><i class="fa fa-chart-bar me-2"></i>Coupon Management</a>
-                   
+                    <a href="/admin/bannerload" class="nav-item list-group-item"><i class="fa fa-chart-bar me-2"></i>Banner Management</a>
+
+                    
                   </div>
             </nav>
         </div>
@@ -305,7 +307,7 @@
                                         <br>
                                         Total Revenu
                                     </div>
-                                    <div class="box-content"><%= totalRevenue %></div>
+                                    <div class="box-content"><%= Math.round(totalRevenue * 100) / 100 %></div>
                                 </div>
                             </div>
   
@@ -333,7 +335,35 @@ ORDER STATUS
     <canvas id="yearlyRevenueChart"></canvas>
     <br><br>
 
-<a href="/admin/downloadSalesReport" class="button">Download Sales Report</a>
+    <!-- Sales Report Preview Start -->
+    <div class="container-fluid pt-4 px-4" >
+        <div class="row">
+            <div class="col-md-8 mx-auto">
+                <div class="card" style="margin: 5px;">
+                    <div class="card-header">
+                        <h4 class="card-title"  style="color: #0c0101;">Sales Report Preview</h4>
+                    </div>
+                    <div class="card-body">
+                           <!-- Display sales report data here -->
+                          <h3 style="color: #0c0101c8;"><u>Users Details</u></h3>
+                          <h5 style="color: #0c010187;">Total Users: <%= totalUsers %></h5>
+                          <h5 style="color: #0c010173;">Total blockUser: <%= blockUser %></h5>
+                          
+                          <h3 style="color: #0c0101ce;"><u>Orders Details</u></h3>
+                          
+                          <h5 style="color: #0c0101a3;">Total product: <%= totalproduct %></h5>
+                          
+                          <h5 style="color: #0c0101a7;">Total Orders: <%= totalOrders %></h5>
+                          <h5 style="color: #0c0101c9;">Cancelled Orders: <%= cancelledOrders %></h5>
+                          <h5 style="color: #0c0101bd;">TotalRevenue: <%= totalRevenue %></h5>
+Do you want more details download the SalesReport <br>
+<a href="/admin/dowloadsalesReports" class="button">Download Sales Report in pdf</a>
+<a href="/admin/dowloadsalesExle" class="button">Download Sales Report in exel</a>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
 <!-- SALES STATUS
 <div>
@@ -419,6 +449,8 @@ function fetchData(period) {
         .then(userData => updateChart(userData))
         .catch(error => console.error('Error:', error));
 }
+
+
 
 
 </script>
