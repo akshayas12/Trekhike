@@ -69,17 +69,23 @@ exports.verifylogin = async (req, res) => {
 exports.getUserDetailsAndOrders  = async () => {
     try {
         // Aggregate user logins by month with month names
+        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
         const monthlyLogins = await User.aggregate([
             {
                 $group: {
                     _id: { $month: "$createdAt" },
-                    monthName: { $first: { $dateToString: { format: "%B", date: "$createdAt" } } },
                     count: { $sum: 1 }
+                }
+            },
+            {
+                $addFields: {
+                    monthName: { $arrayElemAt: [monthNames, { $subtract: ["$_id", 1] }] }
                 }
             },
             { $sort: { "_id": 1 } }
         ]);
-
+        
         // Generate data for all months, filling in missing months with count 0
         const allMonths = Array.from({ length: 12 }, (_, index) => {
             const month = index + 1;
