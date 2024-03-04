@@ -5,6 +5,7 @@ const categoryController=require('../controllers/admin/categoryController');
 const orderController=require('../controllers/admin/orderController');
 const couponController=require('../controllers/admin/couponController');
 const dashboardController=require('../controllers/admin/dashboardController')
+const bannerController=require('../controllers/admin/bannerController');
 const multerMiddleware =require('../middleware/multer').upload
 const auth=require('../middleware/adminauth')
 route.get('/',auth.isLogout,adminController.loadLogin);
@@ -15,10 +16,12 @@ route.get('/dashboard-data',auth.isLogin,dashboardController.dashboardData);
 route.get('/order-data',auth.isLogin,dashboardController.orderData);
 route.get('/deliveredOrders', dashboardController.salesReport); 
 route.get('/downloadSalesReport', dashboardController.downloadSalesReport); 
+route.get('/dowloadsalesReports',dashboardController.downloadSalesReports);
+route.get('/dowloadsalesExle',dashboardController.downloadSalesReportsExcel);
 route.get('/getUserDetailsAndOrders', dashboardController.getUserDetailsAndOrders); 
 route.get('/getYearlyRevenue', dashboardController.getYearlyRevenue); 
-
-
+route.get('/bannerload',bannerController.bannerLoad);
+route.get('/add-banner',bannerController.addbanner);
 
 
 
