@@ -1,7 +1,7 @@
 const User = require('../../models/userModel');
 const Order = require('../../models/orderModel');
 const Product=require('../../models/productModel')
-const pdfs = require('pdfkit');
+const PDFDocument = require('pdfkit');
 const table = require('pdfkit-table');
 const ejs = require('ejs');
 const fs = require('fs');
@@ -16,38 +16,138 @@ const { getUserDetailsAndOrders } =require('../../controllers/admin/adminControl
 
 const renderFileAsync = util.promisify(ejs.renderFile);
 
+// exports.downloadSalesReports = async (req, res) => {
+//   try {
+//     // Get other necessary data
+//     const { totalUsers, blockUser, mergedData, totalOrders, cancelledOrders, totalProduct, totalRevenue, deliveredOrders, mostSellingProduct, returnOrderCount, onlinePayment, pendingOrdersCount } = await getUserDetailsAndOrders();
+
+//     // Render the EJS template to HTML with all required data passed as local variables
+//     ejs.renderFile('views/admin/sales-report.ejs', { totalUsers, blockUser, mergedData,totalOrders, cancelledOrders, totalProduct, totalRevenue, deliveredOrders, mostSellingProduct, returnOrderCount, onlinePayment, pendingOrdersCount }, function(err, html){
+//       if (err) {
+//         console.error('Error generating HTML:', err);
+//         res.status(500).send('An error occurred while generating the HTML');
+//       } else {
+//         var options = { format: 'Letter' };
+
+//         // Create a PDF from the HTML string
+//         pdf.create(html, options).toStream(function(err, stream){
+//           if (err) {
+//             console.error('Error generating PDF:', err);
+//             res.status(500).send('An error occurred while generating the PDF');
+//           } else {
+//             // Set the filename for download
+//             res.setHeader('Content-Disposition', 'attachment; filename="sales-report.pdf"');
+//             stream.pipe(res);
+//           }
+//         });
+//       }
+//     });
+//   } catch (error) {
+//     console.error('Error:', error);
+//     res.status(500).send('An error occurred');
+//   }
+// };
+
 exports.downloadSalesReports = async (req, res) => {
   try {
-    // Get other necessary data
+    // Get necessary data
     const { totalUsers, blockUser, mergedData, totalOrders, cancelledOrders, totalProduct, totalRevenue, deliveredOrders, mostSellingProduct, returnOrderCount, onlinePayment, pendingOrdersCount } = await getUserDetailsAndOrders();
 
-    // Render the EJS template to HTML with all required data passed as local variables
-    ejs.renderFile('views/admin/sales-report.ejs', { totalUsers, blockUser, mergedData,totalOrders, cancelledOrders, totalProduct, totalRevenue, deliveredOrders, mostSellingProduct, returnOrderCount, onlinePayment, pendingOrdersCount }, function(err, html){
-      if (err) {
-        console.error('Error generating HTML:', err);
-        res.status(500).send('An error occurred while generating the HTML');
-      } else {
-        var options = { format: 'Letter' };
+    // Create a new PDF document
+    const doc = new PDFDocument();
 
-        // Create a PDF from the HTML string
-        pdf.create(html, options).toStream(function(err, stream){
-          if (err) {
-            console.error('Error generating PDF:', err);
-            res.status(500).send('An error occurred while generating the PDF');
-          } else {
-            // Set the filename for download
-            res.setHeader('Content-Disposition', 'attachment; filename="sales-report.pdf"');
-            stream.pipe(res);
-          }
-        });
-      }
+    // Set response headers for PDF download
+    res.setHeader('Content-Disposition', 'attachment; filename="sales-report.pdf"');
+    res.setHeader('Content-Type', 'application/pdf');
+
+    // Pipe the PDF document to the response
+    doc.pipe(res);
+
+    // Add content to the PDF document
+    doc.fontSize(20).font('Helvetica-Bold').text('Sales Report', { align: 'center' }).moveDown(0.5);
+
+    // Add table for monthly logins
+    doc.fontSize(16).text('Monthly Logins', { align: 'left' }).moveDown(0.5);
+    const monthlyLoginsTable = {
+      headers: ['Month', 'Number of Logins'],
+      rows: mergedData.map(({ monthName, count }) => [monthName, count])
+    };
+
+    const tableTop = doc.y;
+    const initialY = tableTop;
+    const initialX = 50;
+    const cellPadding = 10;
+
+    // Calculate column widths based on the longest content in each column
+    const columnWidths = monthlyLoginsTable.headers.map((header, i) => {
+      const maxLength = Math.max(...monthlyLoginsTable.rows.map(row => row[i].toString().length));
+      return doc.widthOfString(header) > maxLength * 8 ? doc.widthOfString(header) : maxLength * 8; // Adjust column width as needed
     });
+
+    // Draw table headers
+    monthlyLoginsTable.headers.forEach((header, i) => {
+      doc.text(header, initialX + i * (columnWidths[i] + cellPadding), doc.y);
+    });
+
+    doc.moveDown();
+    // Draw table rows
+    monthlyLoginsTable.rows.forEach((row, i) => {
+      row.forEach((cell, j) => {
+        doc.text(cell.toString(), initialX + j * (columnWidths[j] + cellPadding), doc.y);
+      });
+      doc.moveDown();
+    });
+
+    // Add other details
+    doc.text('User Details', { underline: true });
+    doc.moveDown(); // Move down to leave space after the heading
+
+    doc.text(`Total Users: ${totalUsers}`);
+    doc.text(`Blocked Users: ${blockUser}`);
+    doc.moveDown();
+    doc.text('Order Details', { underline: true });
+    doc.moveDown(); // Move down to leave space after the heading
+
+    doc.text(`Total Orders: ${totalOrders}`);
+    doc.text(`Cancelled Orders: ${cancelledOrders}`);
+    doc.text(`Total ReturnOrderCount: ${returnOrderCount}`);
+    doc.text(`Total PendingOrdersCount: ${pendingOrdersCount}`);
+
+    
+    doc.text(`Total Product: ${totalProduct}`);
+    const deliveredOrdersCount = deliveredOrders.length;
+
+    doc.text(`Total Delivered Orders: ${deliveredOrdersCount}`);
+    doc.moveDown();
+
+    doc.text('Total Revenue', { underline: true });
+    doc.text(`Total Revenue: ${totalRevenue}`);
+
+    doc.moveDown();
+    doc.text('Most Selling Product', { underline: true });
+
+if (mostSellingProduct) {
+  const productDetails = `
+    Product Name: ${mostSellingProduct.productName}
+    Description: ${mostSellingProduct.description}
+    Price: ${mostSellingProduct.price}
+    Stock: ${mostSellingProduct.stock}
+    Size: ${mostSellingProduct.size}
+    Offer: ${mostSellingProduct.offer ? mostSellingProduct.offer.amount : 'No offer available'}
+  `;
+  doc.text(productDetails);
+} else {
+  doc.text('No most selling product found');
+}
+    // Add more details as needed...
+
+    // Finalize the PDF document
+    doc.end();
   } catch (error) {
     console.error('Error:', error);
     res.status(500).send('An error occurred');
   }
 };
-
 exports.downloadSalesReportsExcel = async (req, res) => {
   try {
     // Get other necessary data
