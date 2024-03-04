@@ -2,7 +2,9 @@ const Category =require('../../models/categoryModel');
 const Product=require('../../models/productModel');
 // const upload = require('../../middleware/multer')
 //category management
+const { upload } = require('../../middleware/multer');
 
+const sharp=require('sharp');
 async function updateProductPrices(product) {
     try {
         const productId = product._id;
@@ -299,13 +301,67 @@ exports.loadProduct = async (req, res) => {
     }
 };
 
+// exports.addProduct = async (req, res) => {
+//     try {
+//         const { productName, category, size, oldPrice, stock, description, offerType, offerAmount, offerEndDate } = req.body;
+
+//         let images = [];
+//         if (req.files && Array.isArray(req.files)) {
+//             images = req.files.map((file) => file.filename);
+//         }
+
+//         const newProduct = new Product({
+//             productName,
+//             category,
+//             size,
+//             oldPrice,
+//             stock,
+//             description,
+//             images,
+//             offer: {
+//                 type: offerType,
+//                 amount: offerAmount,
+//                 endDate: offerEndDate,
+//             },
+//         });
+
+//         await newProduct.save();
+//         await updateProductPrices(newProduct);
+
+//         console.log('Images:', images);
+//         res.redirect('/admin/product');
+//     } catch (error) {
+//         console.error('Error adding new product:', error.message);
+//         res.status(500).send('Internal Server Error');
+//     }
+// };
+
+
 exports.addProduct = async (req, res) => {
     try {
         const { productName, category, size, oldPrice, stock, description, offerType, offerAmount, offerEndDate } = req.body;
 
         let images = [];
         if (req.files && Array.isArray(req.files)) {
-            images = req.files.map((file) => file.filename);
+            images = await Promise.all(req.files.map(async (file) => {
+                const filename = file.filename;
+
+                // Log the filename being processed
+                console.log('Processing file:', filename);
+
+                // Check if file exists
+                if (!filename) {
+                    throw new Error('Input file is missing: ' + filename);
+                }
+
+                // Crop the image to 100x100 pixels
+                await sharp(`public/images/${filename}`)
+                    .resize(100, 100)
+                    .toFile(`public/images/cropped_${filename}`);
+
+                // Return the new filename
+                return `cropped_${filename}`;
+            }));
         }
 
         const newProduct = new Product({
@@ -330,10 +386,9 @@ exports.addProduct = async (req, res) => {
         res.redirect('/admin/product');
     } catch (error) {
         console.error('Error adding new product:', error.message);
-        res.status(500).send('Internal Server Error');
+        res.status(500).send('Error adding new product: ' + error.message);
     }
 };
-
 
 exports.LoadEditProduct = async (req, res) => {
     try {
