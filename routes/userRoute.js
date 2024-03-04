@@ -7,6 +7,7 @@ const couponController=require('../controllers/user/couponController')
 const auth=require('../middleware/auth')
 const multer=require('multer');
 const path=require('path');
+const razorpayInstance=require('../config/razorpayConfig')
 const storage=multer.diskStorage({
     destination:function (req,file,cb) {
         cb(null,path.join(__dirname,'../public/userimage'))
