@@ -74,25 +74,23 @@
 
     <div>
       <h3>Customer Information</h3>
-      <p>Name: <%= order.userName %></p>
+      <p>Name: <%= orderDetails.userName %></p>
     </div>
-
+  
     <div>
       <h3>Payment Details</h3>
-      <p>Payment Method: <%= order.payment %></p>
-      <p>Discount Amount: $<%= order.discountAmount %> </p>
-
-      <p><b>Total Amount: $<%= order.totalAmount %>  </b></p>
-
+      <p>Payment Method: <%= orderDetails.payment %></p>
+      <p>Discount Amount: $<%= orderDetails.discountAmount %> </p>
+      <p><b>Total Amount: $<%= orderDetails.totalAmount %> </b></p>
     </div>
 
     <form action="/capture-payment" method="post">
       <script
         src="https://checkout.razorpay.com/v1/checkout.js"
         data-key="rzp_test_9e69PexaUI6QFv"
-        data-amount="<%= razorpayOrder.amount %>"
+        data-amount="<%= orderDetails.totalAmount * 100 %>"
         data-currency="INR"
-        data-order_id="<%= razorpayOrder.id %>"
+        data-order_id="<%= orderDetails.razorpayOrderId %>"
         data-buttontext="PAY NOW"
         data-name="TREKHIKE"
         data-description="Order Payment"
